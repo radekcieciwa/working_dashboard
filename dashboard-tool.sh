@@ -2,7 +2,7 @@
 #
 # Author Radoslaw Cieciwa <radekcieciwa@gmail.com>
 #
-# Dashboard for working copies
+# Supplementary tool for dashboard.
 #
 
 USER=$1
@@ -13,26 +13,30 @@ jsonval() {
   echo ${temp##*|}
 }
 
-check_working_copy() {
+update_if_dev() {
 	cd $1
-	CURRENT_TICKET=`git symbolic-ref HEAD | sed -e 's|^refs/heads/||' | sed -e 's|_.*||'`
 	CURRENT_BRANCH=`git branch | grep \* | sed 's/* //g'`
 	if [ "$CURRENT_BRANCH" = "dev" ]; then
-		OUTPUT="$1|$CURRENT_BRANCH"
+		git pull
+    git submodule update
+    echo "$1: [dev] pulled"
 	else
+		CURRENT_TICKET=`git symbolic-ref HEAD | sed -e 's|^refs/heads/||' | sed -e 's|_.*||'`
 		STATUS_JSON=`php ../working_dashboard/jira-tool.php ticket=$CURRENT_TICKET u=$USER p=$PASSWORD`
 		LINK="https://jira.badoojira.com/browse/$CURRENT_TICKET"
 		STATUS=`jsonval "$STATUS_JSON" status`
-		TITLE=`jsonval "$STATUS_JSON" title`
-		QA_EST=`jsonval "$STATUS_JSON" qa_est`
-		OUTPUT="$1|[$CURRENT_TICKET]|$STATUS|$TITLE|$QA_EST|$LINK"
+
+		if [ "$STATUS" = "In Dev" ]; then
+			../working_dashboard/clear_git.sh
+		else
+	    echo "$1: [$CURRENT_TICKET] skipping"
+		fi
 	fi
 
-	echo $OUTPUT
 	cd ..
 }
 
-check_working_copy alpha
-check_working_copy beta
-check_working_copy delta
-check_working_copy gamma
+update_if_dev alpha
+update_if_dev beta
+update_if_dev delta
+update_if_dev gamma

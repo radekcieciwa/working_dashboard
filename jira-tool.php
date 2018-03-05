@@ -22,14 +22,26 @@ class StatsSnippetsPrinterJob {
 		$qa_time = $issue->getQaEstimations();
 		$status = $issue->getTaskStatus();
 
-		if (empty($qa_time)) {
-			$qa_time = "QA (est.) N/A";
-		} else {
-			$qa_time = "QA (est.) " . $qa_time;
-		}
+		// if (empty($qa_time)) {
+		// 	$qa_time = "QA (est.) N/A";
+		// } else {
+		// 	$qa_time = "QA (est.) " . $qa_time;
+		// }
 
-		$output = "[$status]|$title|$qa_time";
-		fwrite(STDOUT, $output);
+		$data = [
+			"status" => $status,
+			"title" => $title,
+			"qa_est" => $qa_time
+		];
+
+		header('Content-Type: application/json');
+		fwrite(STDOUT, json_encode($data));
+
+		// echo json_encode($data);
+
+		// return directly
+		// $output = "[$status]|$title|$qa_time";
+		// fwrite(STDOUT, $output);
 	}
 
 	/**
