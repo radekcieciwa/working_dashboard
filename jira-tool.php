@@ -21,27 +21,17 @@ class StatsSnippetsPrinterJob {
 		$title = $issue->getSummary();
 		$qa_time = $issue->getQaEstimations();
 		$status = $issue->getTaskStatus();
-
-		// if (empty($qa_time)) {
-		// 	$qa_time = "QA (est.) N/A";
-		// } else {
-		// 	$qa_time = "QA (est.) " . $qa_time;
-		// }
+		$assignee = $issue->getTaskAsignee();
 
 		$data = [
 			"status" => $status,
 			"title" => $title,
-			"qa_est" => $qa_time
+			"qa_est" => $qa_time,
+			"assignee" => $assignee
 		];
 
 		header('Content-Type: application/json');
 		fwrite(STDOUT, json_encode($data));
-
-		// echo json_encode($data);
-
-		// return directly
-		// $output = "[$status]|$title|$qa_time";
-		// fwrite(STDOUT, $output);
 	}
 
 	/**
@@ -88,6 +78,7 @@ class JiraCurlClient {
 			$this->password = $password;
 	}
 
+	// curl -u j_user:j_pass https://jira.badoojira.com/rest/api/latest/issue/ticket
 	public function getIssue($ticket) {
 		$path = self::BASE_ISSUE_URL . $ticket;
 		$jiraResponseJson = $this->requestJiraJql($path);
@@ -175,6 +166,14 @@ class Issue {
 
 	public function __construct($rawJiraIssue) {
 		$this->record = $rawJiraIssue;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getTaskAsignee() {
+		return $this->record['fields']['assignee']['displayName'];
 	}
 
 	/**

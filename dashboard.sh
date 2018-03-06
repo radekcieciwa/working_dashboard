@@ -25,7 +25,8 @@ check_working_copy() {
 		STATUS=`jsonval "$STATUS_JSON" status`
 		TITLE=`jsonval "$STATUS_JSON" title`
 		QA_EST=`jsonval "$STATUS_JSON" qa_est`
-		OUTPUT="$1|[$CURRENT_TICKET]|$STATUS|$TITLE|$QA_EST|$LINK"
+    ASSIGNEE=`jsonval "$STATUS_JSON" assignee`
+		OUTPUT="$1|[$CURRENT_TICKET]|$STATUS|$ASSIGNEE|$TITLE|$QA_EST|$LINK"
 	fi
 
 	echo $OUTPUT
