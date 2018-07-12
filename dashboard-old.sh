@@ -26,7 +26,7 @@ check_working_copy() {
 		TITLE=`jsonval "$STATUS_JSON" title`
 		QA_EST=`jsonval "$STATUS_JSON" qa_est`
     	ASSIGNEE=`jsonval "$STATUS_JSON" assignee`
-		
+
 		OUTPUT="$1|[$CURRENT_TICKET]|$STATUS|$ASSIGNEE|$TITLE|$QA_EST|$LINK"
 	fi
 
@@ -38,6 +38,8 @@ echo "Copy|Ticket|Status|Assignee|Title|QA est.|URL"
 echo "-----|-----|-----|-----|-----|-----|-----"
 check_working_copy alpha
 check_working_copy beta
-check_working_copy delta
 check_working_copy gamma
+check_working_copy delta
+check_working_copy epsilon
+check_working_copy zeta
 echo "=====|=====|=====|=====|=====|=====|====="

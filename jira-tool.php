@@ -22,6 +22,17 @@ class StatsSnippetsPrinterJob {
 		$qa_time = $issue->getQaEstimations();
 		$status = $issue->getTaskStatus();
 		$assignee = $issue->getTaskAsignee();
+		// customfield_11960 - situation
+
+		if (is_null($qa_time)) {
+			$qa_time = "Missing";
+		}
+
+		if ($assignee == $user) {
+			$assignee = "Me";
+		} else {
+			$assignee = $issue->getTaskAsigneeDisplay();
+		}
 
 		$data = [
 			"status" => $status,
@@ -173,6 +184,13 @@ class Issue {
 	 * @return string
 	 */
 	public function getTaskAsignee() {
+		return $this->record['fields']['assignee']['name'];
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getTaskAsigneeDisplay() {
 		return $this->record['fields']['assignee']['displayName'];
 	}
 
