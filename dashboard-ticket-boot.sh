@@ -4,6 +4,16 @@
 # 	We don't assume any issue as we don't have any submodules.
 #
 
+
+function usage() {
+  echo "Usage: $0 <JIRA_TICKET_REF>"
+}
+
+if [ "$#" -ne 1 ]; then
+    usage
+    exit 1
+fi
+
 TICKET_NUMBER=$1
 TICKET_DIR_NAME="$1"
 MAIN_WORKSPACE_ROOT=/Users/radoslawcieciwa/Development/iOS/Badoo

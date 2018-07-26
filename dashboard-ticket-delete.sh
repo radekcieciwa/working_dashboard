@@ -4,6 +4,15 @@
 #
 #
 
+function usage() {
+  echo "Usage: $0 <JIRA_TICKET_REF>"
+}
+
+if [ "$#" -ne 1 ]; then
+    usage
+    exit 1
+fi
+
 TICKET_NUMBER=$1
 MAIN_REPO_PATH=/Users/radoslawcieciwa/Development/iOS/Badoo/_source
 FORCE_CLEANUP=0

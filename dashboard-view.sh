@@ -5,6 +5,15 @@
 # Dashboard for working copies
 #
 
+function usage() {
+  echo "Usage: $0 <JIRA USER NAME>"
+}
+
+if [ "$#" -ne 1 ]; then
+    usage
+    exit 1
+fi
+
 # Export to subprocesses
 export USER=$1
 PASSWORD_ITEM=`./working_dashboard/dashboard-credentials.sh get $USER`
