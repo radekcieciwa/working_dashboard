@@ -6,7 +6,7 @@
 #
 
 function usage() {
-  echo "Usage: $0 <[ticket; view]> <ARGS>"
+  echo "Usage: $0 <[ticket; view; copy]> <ARGS>"
 }
 
 DIR=$(dirname $0)
@@ -15,6 +15,8 @@ if [ "$1" = "ticket" ]; then
   $DIR/dashboard-ticket.sh ${@:2}
 elif [ "$1" = "view" ]; then
   $DIR/dashboard-view.sh ${@:2}
+elif [ "$1" = "copy" ]; then
+  $DIR/dashboard-copy.sh ${@:2}
 else
   usage
 fi

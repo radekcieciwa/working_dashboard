@@ -5,7 +5,7 @@
 #
 
 function usage() {
-  echo "Usage: $0 <JIRA_TICKET_REF>"
+  echo "Usage: $0 <WORKING_COPY>"
 }
 
 if [ "$#" -ne 1 ]; then
@@ -13,16 +13,16 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
-TICKET_NUMBER=$1
+WORKING_COPY=$1
 MAIN_REPO_PATH=/Users/radoslawcieciwa/Development/iOS/Badoo/_source
 FORCE_CLEANUP=0
 
 echo "Start"
-echo "Removing $TICKET_NUMBER ..."
+echo "Removing $WORKING_COPY ..."
 
-git -C $MAIN_REPO_PATH worktree remove $TICKET_NUMBER
+git -C $MAIN_REPO_PATH worktree remove $WORKING_COPY
 
-git -C $MAIN_REPO_PATH branch | grep $TICKET_NUMBER | while read -r branch ; do
+git -C $MAIN_REPO_PATH branch | grep $WORKING_COPY | while read -r branch ; do
   if [ "$FORCE_CLEANUP" = "1" ]; then
     echo "Force removing $branch branch ..."
     git -C $MAIN_REPO_PATH clean -fdx # to remove all untracked files
