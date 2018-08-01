@@ -25,6 +25,7 @@ git -C $MAIN_REPO_PATH worktree remove $WORKING_COPY
 git -C $MAIN_REPO_PATH branch | grep $WORKING_COPY | while read -r branch ; do
   if [ "$FORCE_CLEANUP" = "1" ]; then
     echo "Force removing $branch branch ..."
+    git -C $MAIN_REPO_PATH reset --hard
     git -C $MAIN_REPO_PATH clean -fdx # to remove all untracked files
     git -C $MAIN_REPO_PATH branch -d $branch -f
     echo "OK"
