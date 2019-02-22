@@ -4,9 +4,8 @@
 # 	We don't assume any issue as we don't have any submodules.
 #
 
-
 function usage() {
-  echo "Usage: $0 <JIRA_TICKET_REF>"
+  echo "usage dashboard boot <jira ticket>"
 }
 
 if [ "$#" -ne 1 ]; then
@@ -14,15 +13,22 @@ if [ "$#" -ne 1 ]; then
     exit 1
 fi
 
+# FIXME: Right now we work on assumption this is always the same as ticket number
 TICKET_NUMBER=$1
 TICKET_DIR_NAME="$1"
-MAIN_WORKSPACE_ROOT=/Users/radoslawcieciwa/Development/iOS/Badoo
-MAIN_REPO_PATH=/Users/radoslawcieciwa/Development/iOS/Badoo/_source
 
-echo "Start"
-git -C $MAIN_REPO_PATH worktree add "$MAIN_WORKSPACE_ROOT/$TICKET_DIR_NAME"
-cd "$MAIN_WORKSPACE_ROOT/$TICKET_DIR_NAME"
+echo "Booting $TICKET_NUMBER..."
+git -C $SOURCE_REPO_PATH worktree add "$TICKETS_WORKSPACE_DIR/$TICKET_DIR_NAME"
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+
+echo "Aida process..."
+cd "$TICKETS_WORKSPACE_DIR/$TICKET_DIR_NAME"
 pwd
-echo "Booting ticket ..."
 ./aida -ei $TICKET_NUMBER
-echo "Done!"
+if [ $? -ne 0 ]; then
+  exit 1  # or $?
+else
+  echo "Successfully created: $TICKET_NUMBER"
+fi

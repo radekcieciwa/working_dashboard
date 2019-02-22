@@ -5,17 +5,20 @@
 #
 
 function usage() {
-  echo "usage dashboard copy <command>"
-  echo
-  echo "Use this command for debug purposes, not real development."
-  echo
-  echo "  add     add a tmp working copy, reset current if already exists"
-  echo "  clear   remove tmp_working_copy"
+  echo "usage $0 [add; clear; review]"
+  exit 1
+}
+
+function usage_review() {
+  echo "Usage: $0 review <ticket>"
   exit 1
 }
 
 COPY_NAME="tmp_working_copy"
 export REVIEW_DIRECTORY_NAME="REVIEW"
+export MAIN_WORKSPACE_ROOT=/Users/radoslawcieciwa/Development/iOS/Badoo
+source ./working_dashboard/dashboard-common.sh
+export DIR=$(dirname $0)
 
 function remove_workree() {
   if [ $# -ne 2 ]; then
@@ -26,7 +29,7 @@ function remove_workree() {
   git -C "$1/$2" reset --hard
   git -C "$1/$2" clean -fdx
 
-  $DASHBOARD_DIR/dashboard-ticket-delete.sh $2
+  $DIR/dashboard-ticket-delete.sh $2
   if [ -d "$1/$2" ]; then
     rm -r $2
   fi
@@ -53,34 +56,12 @@ function qcheckout() {
 
 	LOCAL="$START_OF_BRANCH_NAME${REMOTE#*$START_OF_BRANCH_NAME}"
 	echo "Executing: git checkout -b $LOCAL $REMOTE"
-  git -C $SOURCE_REPO_PATH worktree add --checkout "$TICKETS_WORKSPACE_DIR/$REVIEW_DIRECTORY_NAME/$1" $REMOTE
+  git -C $SOURCE_REPO_PATH worktree add --checkout "$MAIN_WORKSPACE_ROOT/$REVIEW_DIRECTORY_NAME/$1" $REMOTE
 }
 
-COPY="$TICKETS_WORKSPACE_DIR/$COPY_NAME"
-if [ "$1" = "add" ]; then
-  if [ -d $COPY ]; then
-    read -p "Directory already exists. Clear it? [Yy]" -n 1 -r -s </dev/tty
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-      echo
-      git -C $COPY reset --hard
-      git -C $COPY clean -fdx
-      exit 0
-    else
-      exit 1
-    fi
-  fi
-  echo "Adding tmp_working_copy..."
-  git -C $SOURCE_REPO_PATH worktree add $COPY
-  echo "Done"
-elif [ "$1" = "clear" ]; then
-  if [ ! -d $COPY ]; then
-    echo "Warning: Not found any existing copy!"
-    exit 0
-  fi
-
-  remove_workree $TICKETS_WORKSPACE_DIR $COPY_NAME
+if [ "$#" -eq 2 ]; then
+  qcheckout $2
 else
-  echo "$1"
-  usage
+  echo "Clearing all reviews ..."
+  ls -1 $MAIN_WORKSPACE_ROOT/$REVIEW_DIRECTORY_NAME | xargs -L1 bash -c 'remove_workree "$MAIN_WORKSPACE_ROOT/$REVIEW_DIRECTORY_NAME" $0'
 fi
