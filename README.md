@@ -25,5 +25,25 @@ export TICKETS_WORKSPACE_DIR="$BADOO_REPO_DIR"
 export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
 ```
 
-`SOURCE_REPO_PATH` - this is your original working copy directory
+`SOURCE_REPO_PATH` - *this is your original - the only one - working copy directory, keep the some neutral branch, like `dev` or `master`
 `TICKETS_WORKSPACE_DIR` - place where you want to add your worktree copies
+
+### Dashbaord view
+
+Requirements:
+
+* jira
+* keyring
+
+#### Jira script will prompt you for:
+
+* server (eg. https://your.domain.co.uk)
+* user (your jira user - without @bla.bla.com)
+* password
+
+##### To clean those entries
+
+* Go to keychain
+* Search for "jira_script"
+* Remove entries
+
