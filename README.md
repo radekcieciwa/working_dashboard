@@ -25,7 +25,8 @@ export TICKETS_WORKSPACE_DIR="$BADOO_REPO_DIR"
 export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
 ```
 
-`SOURCE_REPO_PATH` - *this is your original - the only one - working copy directory, keep the some neutral branch, like `dev` or `master`
+`SOURCE_REPO_PATH` - *this is your original - the only one - working copy directory*, keep the some neutral branch, like `dev` or `master`
+
 `TICKETS_WORKSPACE_DIR` - place where you want to add your worktree copies
 
 ### Dashbaord view
