@@ -2,7 +2,7 @@
 
 ## How to install
 
-Add this to your ~/.bash_profile file.
+Add this to your `~/.bash_profile` file.
 
 ```
 export BADOO_REPO_DIR="/Users/`whoami`/Development/iOS/Badoo"
@@ -33,18 +33,18 @@ export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
 
 Requirements:
 
-* jira
-* keyring
+* `jira`
+* `keyring`
 
 #### Jira script will prompt you for:
 
-* server (eg. https://your.domain.co.uk)
-* user (your jira user - without @bla.bla.com)
+* server (eg. `https://your.domain.co.uk`)
+* user (your jira user eg. `john.doe` - so without `@bla.bla.com`)
 * password
 
 ##### To clean those entries
 
 * Go to keychain
-* Search for "jira_script"
+* Search for `jira_script`
 * Remove entries
 
