@@ -44,9 +44,9 @@ def authenticate_and_make_JIRA():
     jira = JIRA(server, auth=(user, password))
     return jira
 
-def get_ticket_list(TICKETS_BY_COMMA):
+def get_ticket_list(TICKETS_BY_COMMA, ORDERED_BY = ""):
     jira = authenticate_and_make_JIRA()
-    query = "key in ({})".format(TICKETS_BY_COMMA)
+    query = "key in ({}) {}".format(TICKETS_BY_COMMA, ORDERED_BY)
     verboseprint("Querying: '{}'".format(query))
     RESULTS = jira.search_issues(query, maxResults=50)
     jira.close()
