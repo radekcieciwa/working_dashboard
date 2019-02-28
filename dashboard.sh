@@ -26,8 +26,11 @@ function usage() {
   echo "display list of tickets (require jira credentials and python)"
   echo "  view    runs a python script to display current statuses"
   echo
-  echo "review helper"
-  echo "  review  TBD - Not yet ready"
+  echo "review helper - IN PROGRESS"
+  echo "  review"
+  echo ""
+  echo "check out imporant branches - IN PROGRESS"
+  echo "  release pass a train release version"
 }
 
 function dashboard() {
@@ -42,7 +45,7 @@ function dashboard() {
     $DASHBOARD_DIR/dashboard-ticket-delete.sh ${@:2}
   elif [ "$COMMAND" = "view" ]; then
     query_LIST_OF_REPOS
-    python $DASHBOARD_DIR/jira_dashboard.py $LIST_OF_REPOS
+    python $DASHBOARD_DIR/jira_dashboard.py ${@:2} $LIST_OF_REPOS
   elif [ "$COMMAND" = "copy" ]; then
     $DASHBOARD_DIR/dashboard-copy.sh ${@:2}
   else
