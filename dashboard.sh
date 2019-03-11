@@ -8,8 +8,14 @@
 export TICKETS_WORKSPACE_DIR="$BADOO_REPO_DIR"
 export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
 
-function query_LIST_OF_REPOS() {
-  LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | awk '{ print $1 }' | grep -v $SOURCE_REPO_PATH | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
+function query_list_of_repos_by_coma() {
+  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | awk '{ print $1 }' | grep -v $SOURCE_REPO_PATH | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
+  echo $LIST_OF_REPOS
+}
+
+function query_list_of_repos() {
+  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | awk '{ print $1 }' | grep -v $SOURCE_REPO_PATH | sed 's#.*/##'`
+  echo $LIST_OF_REPOS
 }
 
 function usage() {
@@ -44,8 +50,7 @@ function dashboard() {
   elif [ "$COMMAND" = "delete" ]; then
     $DASHBOARD_DIR/dashboard-ticket-delete.sh ${@:2}
   elif [ "$COMMAND" = "view" ]; then
-    query_LIST_OF_REPOS
-    python $DASHBOARD_DIR/jira_dashboard.py ${@:2} $LIST_OF_REPOS
+    python $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`
   elif [ "$COMMAND" = "copy" ]; then
     $DASHBOARD_DIR/dashboard-copy.sh ${@:2}
   else

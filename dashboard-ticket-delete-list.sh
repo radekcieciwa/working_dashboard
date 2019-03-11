@@ -33,7 +33,7 @@ source ./working_dashboard/dashboard-common.sh
 
 echo "Start"
 source ./working_dashboard/dashboard-common.sh
-query_LIST_OF_REPOS
+LIST_OF_REPOS=`query_list_of_repos_by_coma`
 TICKET_LIST=`python ./working_dashboard/jira_dashboard_tickets_by_status.py $LIST_OF_REPOS $1`
 
 export -f ask_and_remove
