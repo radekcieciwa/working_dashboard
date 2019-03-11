@@ -35,7 +35,7 @@ if order_index >= len(ORDERING):
 RESULTS = get_ticket_list(args.tickets, ORDERING[order_index])
 
 FORMATS = [
-    u'{0:2}.\t{1:10.8}\t{2:12.10}\t{3:20.18}\t{4:88.80}',
+    u'{0:2}. {1:10.10}\t{2:16.14}\t{3:20.18}\t{4:88.80}',
     u'{0:2}.,{1},{2},{3},{4}'
 ]
 
