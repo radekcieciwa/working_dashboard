@@ -29,8 +29,9 @@ function usage() {
   echo "  delete  cleans local branches and worktree copy"
   echo "  copy"
   echo
-  echo "display list of tickets (require jira credentials and python)"
-  echo "  view    runs a python script to display current statuses"
+  echo "view operations"
+  echo "  view    display list of tickets (require jira credentials and python)"
+  echo "  open    opens a directory with the script"
   echo
   echo "review helper - IN PROGRESS"
   echo "  review"
@@ -47,6 +48,12 @@ function dashboard() {
       # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
       cd "$TICKETS_WORKSPACE_DIR/$2"
     fi
+  elif [ "$COMMAND" = "open" ]; then
+    if [ "$#" -ne 2 ]; then
+        usage
+        return 1
+    fi
+    cd "$TICKETS_WORKSPACE_DIR/$2"
   elif [ "$COMMAND" = "delete" ]; then
     $DASHBOARD_DIR/dashboard-ticket-delete.sh ${@:2}
   elif [ "$COMMAND" = "view" ]; then

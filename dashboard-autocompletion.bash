@@ -6,7 +6,7 @@
 # ref. https://opensource.com/article/18/3/creating-bash-completion-script
 _dashboard_completions()
 {
-  if [ ${#COMP_WORDS[@]} -eq 3 ] && [ "${COMP_WORDS[1]}" == "delete" ]; then
+  if [ ${#COMP_WORDS[@]} -eq 3 ] && { [ "${COMP_WORDS[1]}" == "delete" ] || [ "${COMP_WORDS[1]}" == "open" ]; }; then
     LIST_OF_REPOS=`query_list_of_repos`
     local local_repositories=($(compgen -W "$LIST_OF_REPOS" "${COMP_WORDS[2]}"))
     COMPREPLY=("${local_repositories[@]}")
@@ -17,7 +17,7 @@ _dashboard_completions()
   fi
 
   # keep the suggestions in a local variable, so we can postprocess it
-  local suggestions=($(compgen -W "copy delete view boot" "${COMP_WORDS[1]}"))
+  local suggestions=($(compgen -W "copy delete view boot open" "${COMP_WORDS[1]}"))
 
   # if [ "${#suggestions[@]}" == "1" ]; then
   #   1 autocompletion found
