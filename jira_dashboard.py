@@ -4,6 +4,8 @@ import keyring
 import getpass
 import argparse
 from jira import JIRA
+from jira_dashboard_common import *
+from config import *
 
 # Arguments
 parser = argparse.ArgumentParser()
@@ -14,14 +16,7 @@ parser.add_argument("tickets", help="ticket list separated by coma, eg. IOS-123,
 args = parser.parse_args()
 format_index = args.format
 order_index = args.order
-
-# Config
-# Initialize config before other scripts
-import dashboard_config
-dashboard_config.init(args.verbose)
-
-# Main
-from jira_dashboard_common import *
+setup_vprint(args.verbose)
 
 ORDERING = [
     "",
