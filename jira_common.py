@@ -5,7 +5,6 @@ import getpass
 def shared_authenticate_and_make_JIRA(verbose):
     keychain_service = "jira_script"
 
-    # https://jira.badoojira.com
     server_key_entry = "server"
     server = keyring.get_password(keychain_service, server_key_entry)
     if server is None:
