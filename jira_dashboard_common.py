@@ -8,7 +8,7 @@ import dashboard_config
 from config import *
 
 def authenticate_and_make_JIRA():
-	return shared_authenticate_and_make_JIRA(dashboard_config.verbose)
+	return shared_authenticate_and_make_JIRA()
 
 def get_ticket_list(TICKETS_BY_COMMA, ORDERED_BY = ""):
     jira = authenticate_and_make_JIRA()
