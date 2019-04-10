@@ -8,7 +8,7 @@ import getpass
 from jira import JIRA
 from config import *
 
-def shared_shared_authenticate_and_make_JIRA():
+def shared_authenticate_and_make_JIRA():
     keychain_service = "jira_script"
 
     server_key_entry = "server"
