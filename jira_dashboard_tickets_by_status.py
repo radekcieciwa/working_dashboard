@@ -4,14 +4,11 @@ from jira import JIRA
 import keyring
 import getpass
 import sys
-
-# Config
-# Initialize config before other scripts
-import dashboard_config
-dashboard_config.init(False)
-
-# Main
 from jira_dashboard_common import *
+from config import *
+
+# TODO: Fixcussion, this will not work for delete-batch with logs on, fix 
+setup_vprint(False)
 
 TICKETS_BY_COMMA = sys.argv[1]
 STATUSES = sys.argv[2]

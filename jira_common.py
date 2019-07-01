@@ -1,11 +1,16 @@
-from jira import JIRA
+#!/usr/local/bin/python
+# DEPENDENCIES:
+# keyring: pip install keyring
+
 import keyring
 import getpass
 
-def shared_authenticate_and_make_JIRA(verbose):
+from jira import JIRA
+from config import *
+
+def shared_authenticate_and_make_JIRA():
     keychain_service = "jira_script"
 
-    # https://jira.badoojira.com
     server_key_entry = "server"
     server = keyring.get_password(keychain_service, server_key_entry)
     if server is None:
@@ -25,10 +30,7 @@ def shared_authenticate_and_make_JIRA(verbose):
         keyring.set_password(keychain_service, password_key_entry, password)
 
     # Authentication to JIRA
-    if verbose:
-        # TODO: Redirect to different channel
-        print "Connecting: {}".format(server)
+    vprint("Connecting: {}".format(server))
     jira = JIRA(server, auth=(user, password))
-    if verbose:
-        print "Connected as {}".format(user)
+    vprint("Connected as {}".format(user))
     return jira
