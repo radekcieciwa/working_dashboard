@@ -33,8 +33,8 @@ def get_ticket_list(TICKETS_BY_COMMA, ORDERED_BY = ""):
 def get_ticket_list_in_status(TICKETS_BY_COMMA, STATUSES):
     jira = authenticate_and_make_JIRA()
     query = "key in ({0}) and status in ({1})".format(TICKETS_BY_COMMA, STATUSES)
-    print "Querying ..."
+    verboseprint("Querying ...")
     RESULTS = jira.search_issues(query, maxResults=50)
     jira.close()
-    print "Got results ..."
+    verboseprint("Got results ...")
     return RESULTS

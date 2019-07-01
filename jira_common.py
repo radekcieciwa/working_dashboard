@@ -26,6 +26,7 @@ def shared_authenticate_and_make_JIRA(verbose):
 
     # Authentication to JIRA
     if verbose:
+        # TODO: Redirect to different channel
         print "Connecting: {}".format(server)
     jira = JIRA(server, auth=(user, password))
     if verbose:

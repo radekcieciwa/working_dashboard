@@ -22,19 +22,27 @@ function ask_and_remove() {
   if [[ $REPLY =~ ^[Yy]$ ]]
   then
     echo
-    ./working_dashboard/dashboard-ticket-delete.sh $1
+    $DASHBOARD_DIR/dashboard-ticket-delete.sh $1
+    retVal=$?
+    if [ $retVal -ne 0 ]; then
+      read -p "ERROR! Shall we try FORCE delete $1 [Yy]? " -n 1 -r -s </dev/tty
+      if [[ $REPLY =~ ^[Yy]$ ]]
+      then
+        $DASHBOARD_DIR/dashboard-ticket-delete.sh -f $1
+        exit $?
+      fi
+    fi
+    exit $retVal
   else
     echo
     echo "Skipping $1"
   fi
 }
 
-source ./working_dashboard/dashboard-common.sh
-
 echo "Start"
-source ./working_dashboard/dashboard-common.sh
+source $DASHBOARD_DIR/dashboard.sh
 LIST_OF_REPOS=`query_list_of_repos_by_coma`
-TICKET_LIST=`python ./working_dashboard/jira_dashboard_tickets_by_status.py $LIST_OF_REPOS $1`
+TICKET_LIST=`python $DASHBOARD_DIR/jira_dashboard_tickets_by_status.py "$LIST_OF_REPOS" \""${@:1}"\"`
 
 export -f ask_and_remove
 echo $TICKET_LIST | awk -v k="text" '{n=split($0,a,","); for (i=1; i<=n; i++) print a[i]}' | xargs -L1 bash -c 'ask_and_remove $0'

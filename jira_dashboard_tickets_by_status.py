@@ -1,10 +1,17 @@
 #!/usr/local/bin/python
 
-from jira_dashboard_common import *
 from jira import JIRA
 import keyring
 import getpass
 import sys
+
+# Config
+# Initialize config before other scripts
+import dashboard_config
+dashboard_config.init(False)
+
+# Main
+from jira_dashboard_common import *
 
 TICKETS_BY_COMMA = sys.argv[1]
 STATUSES = sys.argv[2]

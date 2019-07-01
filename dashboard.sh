@@ -27,6 +27,7 @@ function usage() {
   echo "controls the jira ticket (creates a new branch) lifecycle"
   echo "  boot    runs aida process and enters the folder"
   echo "  delete  cleans local branches and worktree copy"
+  echo "  delete-batch  cleans local branches and worktree copy for tickets by status"
   echo "  copy"
   echo
   echo "view operations"
@@ -56,6 +57,8 @@ function dashboard() {
     cd "$TICKETS_WORKSPACE_DIR/$2"
   elif [ "$COMMAND" = "delete" ]; then
     $DASHBOARD_DIR/dashboard-ticket-delete.sh ${@:2}
+  elif [ "$COMMAND" = "delete-batch" ]; then
+    $DASHBOARD_DIR/dashboard-ticket-delete-batch.sh "${@:2}"
   elif [ "$COMMAND" = "view" ]; then
     python $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`
   elif [ "$COMMAND" = "copy" ]; then
