@@ -49,6 +49,8 @@ function dashboard() {
       # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
       cd "$TICKETS_WORKSPACE_DIR/$2"
     fi
+  elif [ "$COMMAND" = "boot-random" ]; then
+    $DASHBOARD_DIR/dashboard-ticket-boot-random.sh
   elif [ "$COMMAND" = "open" ]; then
     if [ "$#" -ne 2 ]; then
         usage

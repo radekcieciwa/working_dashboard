@@ -17,7 +17,7 @@ _dashboard_completions()
   fi
 
   # keep the suggestions in a local variable, so we can postprocess it
-  local suggestions=($(compgen -W "copy delete view boot open" "${COMP_WORDS[1]}"))
+  local suggestions=($(compgen -W "copy delete delete-batch view boot boot-random open" "${COMP_WORDS[1]}"))
 
   # if [ "${#suggestions[@]}" == "1" ]; then
   #   1 autocompletion found
