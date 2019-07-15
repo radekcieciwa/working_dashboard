@@ -34,6 +34,10 @@ function usage() {
   echo "  view    display list of tickets (require jira credentials and python)"
   echo "  open    opens a directory with the script"
   echo
+  echo "working helper (experimental)"
+  echo "  boot-random   creates a random branch where you can play around"
+  echo "  patch-close   creates a patch from all changes in top directory of branch and removes that branch"
+  echo
   echo "review helper - IN PROGRESS"
   echo "  review"
   echo ""
@@ -51,6 +55,9 @@ function dashboard() {
     fi
   elif [ "$COMMAND" = "boot-random" ]; then
     $DASHBOARD_DIR/dashboard-ticket-boot-random.sh
+  elif [ "$COMMAND" = "patch-close" ]; then
+    $DASHBOARD_DIR/dashboard-branch-close.sh
+    cd ..
   elif [ "$COMMAND" = "open" ]; then
     if [ "$#" -ne 2 ]; then
         usage
