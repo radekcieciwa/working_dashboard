@@ -5,7 +5,7 @@
 #
 
 function usage() {
-  echo "usage dashboard boot-random"
+  echo "usage dashboard patch-boot"
 }
 
 if [ "$#" -ne 0 ]; then

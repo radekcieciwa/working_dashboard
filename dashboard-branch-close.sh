@@ -11,12 +11,15 @@ if [[ $REPLY =~ ^[Yy]$ ]]
 then
   PATCH="patch_$CURRENT_DIR.diff"
   git add .
-  git diff --cached --binary > "../$PATCH"
-
-  if [ $? -ne 0 ]; then
-    exit 1
+  if git diff-index --quiet HEAD --; then
+    echo "No changes discovered in this branch. No patch file created."
   else
-    echo "Successfully created: $PATCH in parent directory."
+    git diff --cached --binary > "../$PATCH"
+    if [ $? -ne 0 ]; then
+      exit 1
+    else
+      echo "Successfully created: $PATCH in parent directory."
+    fi
   fi
 
   $DASHBOARD_DIR/dashboard-ticket-delete.sh -f $CURRENT_DIR

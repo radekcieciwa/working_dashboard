@@ -5,6 +5,7 @@
 #
 
 # NOT USEFULL!
+# I use it all the time
 
 function usage() {
   echo "Usage: $0 <Statuses to remove>"
