@@ -1,32 +1,32 @@
 #!/usr/bin/env bash
 #
 
+# Color changes: https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
+YELLOW='\033[1;33m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+NC='\033[0m'
+
 function usage() {
-  echo "Usage: $0 <jira ticket> <brand>"
+  echo "Usage: $0 <build> <brand> <jira ticket>"
+  echo "  build {Calabash, Debug}"
 }
 
-if [ "$#" -ne 2 ]; then
+if [ "$#" -ne 3 ]; then
     usage
     exit 1
 fi
 
-PROJET="$TICKETS_WORKSPACE_DIR/$1"
+PROJECT="${TICKETS_WORKSPACE_DIR}/${3}/Dev.xcworkspace"
 BRAND=$2
-BUILD="Calabash"
+BUILD=$1
 
-echo "Starting build on $PROJET/Dev.xcworkspace, scheme: $BRAND, configuration: $BUILD"
+printf "${YELLOW}Checking ${PROJECT}, scheme: ${BRAND}, configuration: ${BUILD}${NC}\n"
 echo
-
-xcodebuild \
-  -workspace "$PROJET/Dev.xcworkspace" \
-  -scheme $BRAND \
-  -configuration $BUILD \
-  -sdk iphonesimulator \
-  build
 
 APP_BUNDLE_PATH=$(\
     xcodebuild \
-    -workspace "$PROJET/Dev.xcworkspace" \
+    -workspace "$PROJECT" \
     -scheme $BRAND \
     -configuration $BUILD \
     -sdk iphonesimulator \
@@ -37,21 +37,21 @@ APP_BUNDLE_PATH=$(\
 
 echo
 
-# Color changes: https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux
-GREEN='\033[0;32m'
-NC='\033[0m'
-printf "Found app at: ${GREEN}${APP_BUNDLE_PATH}${NC}"
+if [[ -d "$APP_BUNDLE_PATH" ]]; then
+  printf "${GREEN}Build exists${NC}\n"
+else
+  printf "${RED}Build's missing${NC}\n"
+  printf "${YELLOW}Building...${NC}\n\n"
+fi
+
+xcodebuild \
+  -workspace "$PROJECT" \
+  -scheme $BRAND \
+  -configuration $BUILD \
+  -sdk iphonesimulator \
+  build
+
 echo
-
-# Consider zipping, or copying as zip?
-# echo "Exporting..."
-# export APP_BUNDLE_PATH
-
-# ZIP_FILE="${BRAND}_${BUILD}_${1}.zip"
-# echo "zippin $APP_BUNDLE_PATH into $ZIP_FILE"
-# zip $ZIP_FILE $APP_BUNDLE_PATH
-# if [ $? -eq 0 ]; then
-# echo "zipped binary to: $ZIP_FILE"
-# fi
+printf "Found at: ${GREEN}${APP_BUNDLE_PATH}${NC}\n"
 
 echo
