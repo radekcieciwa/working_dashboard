@@ -17,11 +17,12 @@ if [ "$#" -ne 3 ]; then
     exit 1
 fi
 
-PROJECT="${TICKETS_WORKSPACE_DIR}/${3}/Dev.xcworkspace"
+TICKET=$3
+PROJECT="${TICKETS_WORKSPACE_DIR}/${TICKET}/Dev.xcworkspace"
 BRAND=$2
 BUILD=$1
 
-printf "${YELLOW}Checking ${PROJECT}, scheme: ${BRAND}, configuration: ${BUILD}${NC}\n"
+printf "${YELLOW}Checking ${TICKET} (${PROJECT}), scheme: ${BRAND}, configuration: ${BUILD}${NC}\n"
 echo
 
 APP_BUNDLE_PATH=$(\
@@ -51,7 +52,14 @@ xcodebuild \
   -sdk iphonesimulator \
   build
 
+TMP_SOURCE_FILE=$(mktemp -t ${TICKET})
+# swap - to _ as this character is not allowed in env names
+ENV_VAR="`echo ${TICKET} | sed 's/-/_/'`_APP"
+echo "export ${ENV_VAR}=\"${APP_BUNDLE_PATH}\"" > $TMP_SOURCE_FILE
 echo
+printf "${YELLOW}Build at `date`${NC}\n\n"
 printf "Found at: ${GREEN}${APP_BUNDLE_PATH}${NC}\n"
-
+SOURCE_COMMAND=". ${TMP_SOURCE_FILE}"
+echo $SOURCE_COMMAND | pbcopy
+printf "\n\n${YELLOW}Source this file to get ${ENV_VAR} variable: '${SOURCE_COMMAND}'${NC}\n"
 echo
