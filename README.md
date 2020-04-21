@@ -1,5 +1,26 @@
 # working_dashboard
 
+## How to run
+
+Examples
+```
+dashboard boot IOS-123456
+dashboard-view
+dashboard delete IOS-123456
+```
+
+Possibilities
+
+**boot** - create a working directory and initiate the scripts for ticket
+
+**open** - opens the directory for ticket
+
+### Create working copy fast and prototype the solution, end with a patch
+
+**boot-random** - creates a working directory, without any scripts
+
+**patch-close** - remove working directory and creates the patch in main directory with the same file name as working directory
+
 ## How to install
 
 Add this to your `~/.bash_profile` file.
