@@ -34,7 +34,9 @@ export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
 Python modules requirements:
 
 These can be install via `pip` (install pip https://pip.pypa.io/en/stable/installing/):
+
 `pip install jira`
+
 `pip install keyring`
 
 * `jira`
