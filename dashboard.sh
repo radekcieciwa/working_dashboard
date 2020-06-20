@@ -6,15 +6,15 @@
 #
 
 export TICKETS_WORKSPACE_DIR="$BADOO_REPO_DIR"
-export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
+export SOURCE_REPO_PATH="$BADOO_REPO_SRC"
 
 function query_list_of_repos_by_coma() {
-  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | awk '{ print $1 }' | grep -v $SOURCE_REPO_PATH | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
+  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | tail -n +2  | awk '{ print $1 }' | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
   echo $LIST_OF_REPOS
 }
 
 function query_list_of_repos() {
-  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | awk '{ print $1 }' | grep -v $SOURCE_REPO_PATH | sed 's#.*/##'`
+  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | tail -n +2 | awk '{ print $1 }' | sed 's#.*/##'`
   echo $LIST_OF_REPOS
 }
 
