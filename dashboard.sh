@@ -45,6 +45,15 @@ function usage() {
   echo "  release pass a train release version"
 }
 
+function evaluatePath() {
+  CURRENT_PATH=`pwd`
+  if [[ $CURRENT_PATH == *$TICKETS_WORKSPACE_DIR* ]]; then
+    REMOVED_PWD=${CURRENT_PATH#"$TICKETS_WORKSPACE_DIR"}
+    TICKET=`echo $REMOVED_PWD | cut -d/ -f2`
+    echo $TICKET
+  fi
+}
+
 function dashboard() {
   COMMAND=$1
   if [ "$COMMAND" = "boot" ]; then
@@ -53,7 +62,18 @@ function dashboard() {
       # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
       cd "$TICKETS_WORKSPACE_DIR/$2"
     fi
-  elif [ "$COMMAND" = "boot-random" ]; then
+  elif [ "$COMMAND" = "calabash" ]; then
+    $DASHBOARD_DIR/dashboard-build.sh Calabash Moxie ${@:2}
+  elif [ "$COMMAND" = "warmup" ]; then
+    TICKET=`evaluatePath`
+    if [[ -z $TICKET ]]; then
+      $DASHBOARD_DIR/dashboard-build.sh Debug Moxie ${@:2}
+    else
+      $DASHBOARD_DIR/dashboard-build.sh Debug Moxie $TICKET
+    fi
+  elif [ "$COMMAND" = "install" ]; then
+    $DASHBOARD_DIR/dashboard-install.sh ${@:2}
+  elif [ "$COMMAND" = "patch-boot" ]; then
     $DASHBOARD_DIR/dashboard-ticket-boot-random.sh
   elif [ "$COMMAND" = "patch-close" ]; then
     $DASHBOARD_DIR/dashboard-branch-close.sh
