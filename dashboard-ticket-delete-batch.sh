@@ -18,10 +18,12 @@ fi
 function ask_and_remove() {
   # Need to add </dev/tty, as normal stdin don't work for subprocess function, ref.: https://stackoverflow.com/questions/30018756/bash-reading-users-y-n-answer-does-not-work-read-command-inside-while-loop-read
   # prompt source: https://stackoverflow.com/questions/1885525/how-do-i-prompt-a-user-for-confirmation-in-bash-script
-  read -p "Do you want to delete $1 [Yy]? " -n 1 -r -s </dev/tty
-  if [[ $REPLY =~ ^[Yy]$ ]]
-  then
-    echo
+
+  # No need to ask for confirmation for each one
+  # read -p "Do you want to delete $1 [Yy]? " -n 1 -r -s </dev/tty
+  # if [[ $REPLY =~ ^[Yy]$ ]]
+  # then
+    # echo
     $DASHBOARD_DIR/dashboard-ticket-delete.sh $1
     retVal=$?
     if [ $retVal -ne 0 ]; then

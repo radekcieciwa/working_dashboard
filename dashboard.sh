@@ -28,6 +28,7 @@ function usage() {
   echo "  boot    runs aida process and enters the folder"
   echo "  delete  cleans local branches and worktree copy"
   echo "  delete-batch  cleans local branches and worktree copy for tickets by status"
+  echo "  cleanup  cleans done tickets by status ad removes derived data"
   echo "  copy"
   echo
   echo "view operations"
@@ -55,6 +56,8 @@ function dashboard() {
     fi
   elif [ "$COMMAND" = "boot-random" ]; then
     $DASHBOARD_DIR/dashboard-ticket-boot-random.sh
+  elif [ "$COMMAND" = "cleanup" ]; then
+    $DASHBOARD_DIR/dashboard-cleanup.sh
   elif [ "$COMMAND" = "patch-close" ]; then
     $DASHBOARD_DIR/dashboard-branch-close.sh
     cd ..
