@@ -34,6 +34,7 @@ function usage() {
   echo "view operations"
   echo "  view    display list of tickets (require jira credentials and python)"
   echo "  open    opens a directory with the script"
+  echo "  title   get's ticket container and try to fetch summary to set to title tab"
   echo
   echo "working helper (experimental)"
   echo "  boot-random   creates a random branch where you can play around"
@@ -58,6 +59,8 @@ function dashboard() {
     $DASHBOARD_DIR/dashboard-ticket-boot-random.sh
   elif [ "$COMMAND" = "cleanup" ]; then
     $DASHBOARD_DIR/dashboard-cleanup.sh
+  elif [ "$COMMAND" = "title" ]; then
+    $DASHBOARD_DIR/dashboard-terminal-title.sh
   elif [ "$COMMAND" = "patch-close" ]; then
     $DASHBOARD_DIR/dashboard-branch-close.sh
     cd ..
@@ -72,7 +75,13 @@ function dashboard() {
   elif [ "$COMMAND" = "delete-batch" ]; then
     $DASHBOARD_DIR/dashboard-ticket-delete-batch.sh "${@:2}"
   elif [ "$COMMAND" = "view" ]; then
-    python $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`
+    # For python environment management - usually it would complain that you can't install pip
+    python3 -m venv $DASHBOARD_DIR/venv
+    source $DASHBOARD_DIR/venv/bin/activate
+
+    python3 $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`
+
+    deactivate
   elif [ "$COMMAND" = "copy" ]; then
     $DASHBOARD_DIR/dashboard-copy.sh ${@:2}
   else

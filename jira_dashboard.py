@@ -1,4 +1,4 @@
-#!/usr/local/bin/python
+#!/usr/local/bin/python3
 
 import keyring
 import getpass
@@ -30,8 +30,8 @@ if order_index >= len(ORDERING):
 RESULTS = get_ticket_list(args.tickets, ORDERING[order_index])
 
 FORMATS = [
-    u'{0:2}. {1:10.10}\t{2:16.14}\t{3:20.18}\t{4:88.80}',
-    u'{0:2}.,{1},{2},{3},{4}'
+    f'{0:2}. {1:<10}\t{2:<16}\t{3:<20}\t{4:<88}',
+    f'{0:2}.,{1},{2},{3},{4}'
 ]
 
 if format_index >= len(FORMATS):
@@ -39,4 +39,5 @@ if format_index >= len(FORMATS):
 
 picked_format = FORMATS[format_index]
 for idx, issue in enumerate(RESULTS):
-    print picked_format.format(idx + 1, issue.key, issue.fields.status, issue.fields.assignee, issue.fields.summary)
+    index = idx + 1
+    print(f'{index:<2}. {issue.key:<10}\t{str(issue.fields.status):.15s}\t{str(issue.fields.assignee):.20s}\t{issue.fields.summary:.88s}')
