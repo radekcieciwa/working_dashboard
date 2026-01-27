@@ -24,6 +24,12 @@ dashboard open IOS-123456
 
 # Delete ticket workspace
 dashboard delete IOS-123456
+
+# Delete tickets by status (interactive selection)
+dashboard delete-batch
+
+# Delete tickets by specific status
+dashboard delete-batch -s "In Release branch"
 ```
 
 ### Command reference
@@ -38,7 +44,11 @@ dashboard delete IOS-123456
 
 **delete** - Clean local branches and worktree copy for a specific ticket
 
-**delete-batch** - Clean local branches and worktree copy for tickets by status
+**delete-batch** - Clean local branches and worktree copy for tickets by status. If no status is provided with `-s` flag, displays an interactive menu to select from available statuses in your current tickets (use arrow keys to navigate, Enter to select). Options:
+  - `-s STATUS` - Specify status directly (e.g., `-s "Closed"`)
+  - `-n` - Dry run mode (show what would be deleted without deleting)
+  - `-f` - Skip confirmation prompts
+  - `-F` - Skip force delete prompts
 
 **cleanup** - Clean done tickets by status and remove derived data
 

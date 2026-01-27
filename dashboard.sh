@@ -30,7 +30,8 @@ function usage() {
   echo "controls the jira ticket (creates a new branch) lifecycle"
   echo "  boot    runs aida process and enters the folder"
   echo "  delete  cleans local branches and worktree copy"
-  echo "  delete-batch  cleans local branches and worktree copy for tickets by status"
+  echo "  delete-batch [-s STATUS]  cleans local branches and worktree copy for tickets by status"
+  echo "              interactive status selection if -s not provided"
   echo "  cleanup  cleans done tickets by status ad removes derived data"
   echo "  copy"
   echo

@@ -9,9 +9,9 @@
 function printUsage() {
   echo "Usage: $(basename \$0) [-n] [-f] [-F] [-s STATUS]" >&2
   echo
-  echo "-s required, represents jira ticket status"
+  echo "-s optional, represents jira ticket status (if not provided, interactive selection will be shown)"
   echo "-n optional, for dry run"
-  echo "-f optional, to skip asking for confirmation" 
+  echo "-f optional, to skip asking for confirmation"
   echo "-F optional, to skip if force is required"
 }
 
@@ -40,9 +40,29 @@ while getopts 'nfFs:' OPTION; do
 done
 shift "$(($OPTIND -1))"
 
+# If STATUS is not provided, use interactive selection
 if [ -z "$STATUS" ]; then
-  printUsage
-  exit 1
+  source $DASHBOARD_DIR/dashboard.sh
+  LIST_OF_REPOS=`query_list_of_repos_by_coma`
+
+  if ! check_venv; then
+    exit 1
+  fi
+
+  echo "No status provided, loading interactive selection..."
+  echo
+
+  source $DASHBOARD_DIR/venv/bin/activate
+  STATUS=$(python3 $DASHBOARD_DIR/jira_select_status_interactive.py "$LIST_OF_REPOS")
+  EXIT_CODE=$?
+  deactivate
+
+  if [ $EXIT_CODE -ne 0 ] || [ -z "$STATUS" ]; then
+    echo "No status selected, exiting"
+    exit 1
+  fi
+
+  echo
 fi
 
 export SKIP
