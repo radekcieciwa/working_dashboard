@@ -24,7 +24,17 @@ getlastsegment() {
   basename "$(pwd)"
 }
 
+# Check if venv exists
+if [ ! -d "$DASHBOARD_DIR/venv" ]; then
+  echo "Error: Virtual environment not found"
+  echo "Please run the installation script first:"
+  echo "  cd $DASHBOARD_DIR && ./install.sh"
+  exit 1
+fi
+
 TICKET=`getlastsegment`
+source $DASHBOARD_DIR/venv/bin/activate
 TITLE=`python3 $DASHBOARD_DIR/jira_summary.py $TICKET`
+deactivate
 set_tabtitle "$TITLE"
 echo $TITLE

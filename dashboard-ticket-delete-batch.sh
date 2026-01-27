@@ -99,7 +99,9 @@ function ask_and_remove() {
 echo "INFO> Working with status: $STATUS"
 source $DASHBOARD_DIR/dashboard.sh
 LIST_OF_REPOS=`query_list_of_repos_by_coma`
-python3 -m venv $DASHBOARD_DIR/venv
+if ! check_venv; then
+  exit 1
+fi
 source $DASHBOARD_DIR/venv/bin/activate
 TICKET_LIST=`python3 $DASHBOARD_DIR/jira_dashboard_tickets_by_status.py "$LIST_OF_REPOS" \""${STATUS}"\"`
 deactivate

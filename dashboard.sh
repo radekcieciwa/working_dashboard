@@ -24,6 +24,9 @@ function usage() {
   echo "Most common usages"
   echo "you can run this command from any directory"
   echo
+  echo "authentication"
+  echo "  token <TOKEN>  stores authentication token in keychain"
+  echo
   echo "controls the jira ticket (creates a new branch) lifecycle"
   echo "  boot    runs aida process and enters the folder"
   echo "  delete  cleans local branches and worktree copy"
@@ -33,7 +36,7 @@ function usage() {
   echo
   echo "view operations"
   echo "  view    display list of tickets (require jira credentials and python)"
-  echo "  open    opens a directory with the script"
+  echo "  open [TICKET]  opens a directory with the script or interactive selection if no ticket provided"
   echo "  title   get's ticket container and try to fetch summary to set to title tab"
   echo
   echo "working helper (experimental)"
@@ -47,9 +50,31 @@ function usage() {
   echo "  release pass a train release version"
 }
 
+function check_venv() {
+  if [ ! -d "$DASHBOARD_DIR/venv" ]; then
+    echo "Error: Virtual environment not found"
+    echo "Please run the installation script first:"
+    echo "  cd $DASHBOARD_DIR && ./install.sh"
+    return 1
+  fi
+  return 0
+}
+
 function dashboard() {
   COMMAND=$1
-  if [ "$COMMAND" = "boot" ]; then
+  if [ "$COMMAND" = "token" ]; then
+    if [ "$#" -ne 2 ]; then
+        echo "Error: Token argument is required"
+        echo "Usage: dashboard token <TOKEN>"
+        return 1
+    fi
+    if ! check_venv; then
+      return 1
+    fi
+    source $DASHBOARD_DIR/venv/bin/activate
+    python3 $DASHBOARD_DIR/jira_store_token.py "$2"
+    deactivate
+  elif [ "$COMMAND" = "boot" ]; then
     $DASHBOARD_DIR/dashboard-ticket-boot.sh ${@:2}
     if [ $? -eq 0 ]; then
       # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
@@ -65,18 +90,37 @@ function dashboard() {
     $DASHBOARD_DIR/dashboard-branch-close.sh
     cd ..
   elif [ "$COMMAND" = "open" ]; then
-    if [ "$#" -ne 2 ]; then
-        usage
+    if [ "$#" -eq 1 ]; then
+      # No ticket provided, use interactive selection
+      if ! check_venv; then
         return 1
+      fi
+      source $DASHBOARD_DIR/venv/bin/activate
+
+      SELECTED_TICKET=$(python3 $DASHBOARD_DIR/jira_open_interactive.py `query_list_of_repos_by_coma`)
+      EXIT_CODE=$?
+
+      deactivate
+
+      if [ $EXIT_CODE -eq 0 ] && [ -n "$SELECTED_TICKET" ]; then
+        cd "$TICKETS_WORKSPACE_DIR/$SELECTED_TICKET"
+      else
+        return 1
+      fi
+    elif [ "$#" -eq 2 ]; then
+      cd "$TICKETS_WORKSPACE_DIR/$2"
+    else
+      usage
+      return 1
     fi
-    cd "$TICKETS_WORKSPACE_DIR/$2"
   elif [ "$COMMAND" = "delete" ]; then
     $DASHBOARD_DIR/dashboard-ticket-delete.sh ${@:2}
   elif [ "$COMMAND" = "delete-batch" ]; then
     $DASHBOARD_DIR/dashboard-ticket-delete-batch.sh "${@:2}"
   elif [ "$COMMAND" = "view" ]; then
-    # For python environment management - usually it would complain that you can't install pip
-    python3 -m venv $DASHBOARD_DIR/venv
+    if ! check_venv; then
+      return 1
+    fi
     source $DASHBOARD_DIR/venv/bin/activate
 
     python3 $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`

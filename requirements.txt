@@ -1,0 +1,3 @@
+jira
+keyring
+simple-term-menu

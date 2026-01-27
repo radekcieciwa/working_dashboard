@@ -16,25 +16,24 @@ def shared_authenticate_and_make_JIRA():
         server = getpass.getpass('Server: ')
         keyring.set_password(keychain_service, server_key_entry, server)
 
-    # user_key_entry = "user"
-    # user = keyring.get_password(keychain_service, user_key_entry)
-    # if user is None:
-    #     user = getpass.getpass('User: ')
-    #     keyring.set_password(keychain_service, user_key_entry, user)
+    user_key_entry = "user"
+    user = keyring.get_password(keychain_service, user_key_entry)
+    if user is None:
+        user = getpass.getpass('User (email): ')
+        keyring.set_password(keychain_service, user_key_entry, user)
 
-    # password_key_entry = "password"
-    # password = keyring.get_password(keychain_service, password_key_entry)
-    # if password is None:
-    #     password = getpass.getpass('Password: ')
-    #     keyring.set_password(keychain_service, password_key_entry, password)
-    # jira = JIRA(server, auth=(user, password), options={'verify': False})
+    # Get token from keychain
+    token_key_entry = "token"
+    token = keyring.get_password(keychain_service, token_key_entry)
+    if token is None:
+        token = getpass.getpass('Token: ')
+        keyring.set_password(keychain_service, token_key_entry, token)
 
-    # Authentication to JIRA
-    token = '<FIXTURE>'
+    # Authentication to JIRA using token
     jira = JIRA(
         server=server,
-        basic_auth=("radoslaw.cieciwa@team.bumble.com", token)
-        )
+        basic_auth=(user, token)
+    )
 
     vprint("Connected as {}".format(user))
     return jira
