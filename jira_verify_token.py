@@ -10,7 +10,12 @@ try:
     user = jira.myself()
     jira.close()
     print("✓ Token is valid and Jira connection successful")
-    print("Logged in as: {}".format(user.displayName))
+    # Handle both dict and object responses
+    if isinstance(user, dict):
+        user_name = user.get('displayName', user.get('name', 'User'))
+    else:
+        user_name = user.displayName
+    print("Logged in as: {}".format(user_name))
     sys.exit(0)
 except SystemExit as e:
     sys.exit(1)
