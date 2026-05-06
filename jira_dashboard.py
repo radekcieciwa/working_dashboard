@@ -3,6 +3,7 @@
 import keyring
 import getpass
 import argparse
+import sys
 from jira import JIRA
 from jira_dashboard_common import *
 from config import *
@@ -18,6 +19,10 @@ format_index = args.format
 order_index = args.order
 setup_vprint(args.verbose)
 
+vprint("Dashboard view starting...")
+vprint("Tickets: {}".format(args.tickets))
+vprint("Verbose: {}".format(args.verbose))
+
 ORDERING = [
     "",
     "ORDER BY status ASC",
@@ -27,7 +32,18 @@ ORDERING = [
 if order_index >= len(ORDERING):
     order_index = 0
 
-RESULTS = get_ticket_list(args.tickets, ORDERING[order_index])
+try:
+    RESULTS = get_ticket_list(args.tickets, ORDERING[order_index])
+except SystemExit:
+    sys.exit(1)
+except Exception as e:
+    print("ERROR: Unexpected error while fetching tickets")
+    print("Details: {}".format(str(e)))
+    sys.exit(1)
+
+if not RESULTS:
+    print("No tickets found")
+    sys.exit(0)
 
 FORMATS = [
     f'{0:2}. {1:<10}\t{2:<16}\t{3:<20}\t{4:<88}',

@@ -125,8 +125,15 @@ function dashboard() {
     source $DASHBOARD_DIR/venv/bin/activate
 
     python3 $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`
+    EXIT_CODE=$?
 
     deactivate
+
+    if [ $EXIT_CODE -ne 0 ]; then
+      echo "Error: Failed to fetch tickets from Jira" >&2
+      echo "Run with -v flag for verbose output: dashboard view -v" >&2
+      return 1
+    fi
   elif [ "$COMMAND" = "copy" ]; then
     $DASHBOARD_DIR/dashboard-copy.sh ${@:2}
   else
