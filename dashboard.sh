@@ -124,15 +124,7 @@ function dashboard() {
     fi
     source $DASHBOARD_DIR/venv/bin/activate
 
-    REPOS=`query_list_of_repos_by_coma`
-    if [ -z "$REPOS" ]; then
-      echo "Error: No git worktrees found"
-      echo "Create a worktree with: dashboard boot <TICKET_KEY>"
-      deactivate
-      return 1
-    fi
-
-    python3 $DASHBOARD_DIR/jira_dashboard.py ${@:2} "$REPOS"
+    python3 $DASHBOARD_DIR/jira_dashboard.py ${@:2} `query_list_of_repos_by_coma`
     EXIT_CODE=$?
 
     deactivate

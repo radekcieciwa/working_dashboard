@@ -25,9 +25,8 @@ def get_ticket_list(TICKETS_BY_COMMA, ORDERED_BY = ""):
         query = "key in ({}) {}".format(TICKETS_BY_COMMA, ORDERED_BY)
         vprint("Querying: '{}'".format(query))
         RESULTS = jira.search_issues(query, maxResults=200)
-        vprint("Query returned {} results".format(len(RESULTS) if RESULTS else 0))
         jira.close()
-        vprint("Connection closed")
+        vprint("Got results ...")
         return RESULTS
     except JIRAError as e:
         jira.close()
@@ -55,9 +54,8 @@ def get_ticket_list_in_status(TICKETS_BY_COMMA, STATUSES):
         query = "key in ({0}) and status in ({1})".format(TICKETS_BY_COMMA, STATUSES)
         vprint("Querying: '{}'".format(query))
         RESULTS = jira.search_issues(query, maxResults=200)
-        vprint("Query returned {} results".format(len(RESULTS) if RESULTS else 0))
         jira.close()
-        vprint("Connection closed")
+        vprint("Got results ...")
         return RESULTS
     except JIRAError as e:
         jira.close()

@@ -20,14 +20,8 @@ order_index = args.order
 setup_vprint(args.verbose)
 
 vprint("Dashboard view starting...")
-vprint("Tickets argument: '{}'".format(args.tickets))
+vprint("Tickets: {}".format(args.tickets))
 vprint("Verbose: {}".format(args.verbose))
-
-if not args.tickets or args.tickets.strip() == "":
-    print("ERROR: No repositories found")
-    print("Make sure you have git worktrees set up with ticket names")
-    print("Use 'dashboard boot <TICKET_KEY>' to create a worktree")
-    sys.exit(1)
 
 ORDERING = [
     "",
@@ -47,14 +41,8 @@ except Exception as e:
     print("Details: {}".format(str(e)))
     sys.exit(1)
 
-vprint("Results count: {}".format(len(RESULTS) if RESULTS else 0))
-
-if not RESULTS or len(RESULTS) == 0:
-    print("No tickets found for: {}".format(args.tickets))
-    print("Possible reasons:")
-    print("1. The repositories don't exist yet (use 'dashboard boot <TICKET_KEY>')")
-    print("2. The ticket keys are invalid or misspelled")
-    print("3. You may not have permission to view these tickets")
+if not RESULTS:
+    print("No tickets found")
     sys.exit(0)
 
 FORMATS = [
