@@ -25,7 +25,8 @@ function usage() {
   echo "you can run this command from any directory"
   echo
   echo "authentication"
-  echo "  token <TOKEN>  stores authentication token in keychain"
+  echo "  token <TOKEN>           stores authentication token in keychain"
+  echo "  token-verify            verify token is valid and connection works"
   echo
   echo "controls the jira ticket (creates a new branch) lifecycle"
   echo "  boot    runs aida process and enters the folder"
@@ -75,6 +76,15 @@ function dashboard() {
     source $DASHBOARD_DIR/venv/bin/activate
     python3 $DASHBOARD_DIR/jira_store_token.py "$2"
     deactivate
+  elif [ "$COMMAND" = "token-verify" ]; then
+    if ! check_venv; then
+      return 1
+    fi
+    source $DASHBOARD_DIR/venv/bin/activate
+    python3 $DASHBOARD_DIR/jira_verify_token.py
+    EXIT_CODE=$?
+    deactivate
+    return $EXIT_CODE
   elif [ "$COMMAND" = "boot" ]; then
     $DASHBOARD_DIR/dashboard-ticket-boot.sh ${@:2}
     if [ $? -eq 0 ]; then
