@@ -52,7 +52,6 @@ function usage() {
   echo "configuration"
   echo "  config list             list all configured repositories"
   echo "  config init <name> [dir] initialize configuration for a repository"
-  echo "  config set <name> <key> <value>  set a configuration value (CONTAINER_DIR, CHECKOUTS_DIR, REPO_CLONE_PATH)"
   echo "  config switch <name>    switch the default repository"
   echo
   echo "authentication"

@@ -113,14 +113,8 @@ dashboard config list
 # Initialize a new repository (auto-detects paths)
 dashboard config init <repo-name> [directory]
 
-# Set a specific configuration value
-dashboard config set <repo-name> BADOO_REPO_DIR /path/to/repo
-
 # Switch the default repository
 dashboard config switch <repo-name>
-
-# Export shell variables for a repository
-dashboard config export <repo-name>
 ```
 
 ### 3. Set up authentication
@@ -144,15 +138,9 @@ The following environment variables are stored in `~/.dashboard/config.json`:
 - `CONTAINER_DIR` - Main container/repository directory
 - `CHECKOUTS_DIR` - Where to create worktree checkouts for tickets
 - `REPO_CLONE_PATH` - Path to the main source repository clone
+- `POST_BOOT_SCRIPT` - (Optional) Post-boot script to run after worktree creation
 
-These can be overridden by setting environment variables with the same names. Configuration is automatically managed via:
-
-```bash
-dashboard config init <name> [directory]
-dashboard config set <name> <key> <value>
-```
-
-Valid keys for `config set`: `CONTAINER_DIR`, `CHECKOUTS_DIR`, `REPO_CLONE_PATH`, `POST_BOOT_SCRIPT`
+These are automatically configured via `dashboard config init`.
 
 ### Post-Boot Scripts
 
