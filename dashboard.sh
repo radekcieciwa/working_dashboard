@@ -33,23 +33,11 @@ function usage() {
   echo "  delete  cleans local branches and worktree copy"
   echo "  delete-batch [-s STATUS]  cleans local branches and worktree copy for tickets by status"
   echo "              interactive status selection if -s not provided"
-  echo "  cleanup  cleans done tickets by status ad removes derived data"
-  echo "  copy"
   echo
   echo "view operations"
   echo "  view    display list of tickets (require jira credentials and python)"
   echo "  open [TICKET]  opens a directory with the script or interactive selection if no ticket provided"
   echo "  title   get's ticket container and try to fetch summary to set to title tab"
-  echo
-  echo "working helper (experimental)"
-  echo "  boot-random   creates a random branch where you can play around"
-  echo "  patch-close   creates a patch from all changes in top directory of branch and removes that branch"
-  echo
-  echo "review helper - IN PROGRESS"
-  echo "  review"
-  echo ""
-  echo "check out imporant branches - IN PROGRESS"
-  echo "  release pass a train release version"
 }
 
 function check_venv() {
@@ -91,15 +79,8 @@ function dashboard() {
       # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
       cd "$TICKETS_WORKSPACE_DIR/$2"
     fi
-  elif [ "$COMMAND" = "boot-random" ]; then
-    $DASHBOARD_DIR/dashboard-ticket-boot-random.sh
-  elif [ "$COMMAND" = "cleanup" ]; then
-    $DASHBOARD_DIR/dashboard-cleanup.sh
   elif [ "$COMMAND" = "title" ]; then
     $DASHBOARD_DIR/dashboard-terminal-title.sh
-  elif [ "$COMMAND" = "patch-close" ]; then
-    $DASHBOARD_DIR/dashboard-branch-close.sh
-    cd ..
   elif [ "$COMMAND" = "open" ]; then
     if [ "$#" -eq 1 ]; then
       # No ticket provided, use interactive selection
@@ -144,8 +125,6 @@ function dashboard() {
       echo "Run with -v flag for verbose output: dashboard view -v" >&2
       return 1
     fi
-  elif [ "$COMMAND" = "copy" ]; then
-    $DASHBOARD_DIR/dashboard-copy.sh ${@:2}
   else
     usage
   fi
