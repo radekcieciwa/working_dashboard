@@ -126,14 +126,20 @@ These credentials are stored securely in your system keychain.
 
 ### Configuration Variables
 
-The following environment variables can be set to override the default configuration:
+The following environment variables are stored in `~/.dashboard/config.json`:
 
-- `BADOO_REPO_DIR` - Main repository directory
-- `DASHBOARD_DIR` - Dashboard script location
-- `TICKETS_WORKSPACE_DIR` - Where to create worktree copies (defaults to `BADOO_REPO_DIR`)
-- `SOURCE_REPO_PATH` - Original working copy directory for maintaining neutral branch (defaults to `BADOO_REPO_DIR/_source`)
+- `CONTAINER_DIR` - Main container/repository directory
+- `CHECKOUTS_DIR` - Where to create worktree checkouts for tickets
+- `REPO_CLONE_PATH` - Path to the main source repository clone
 
-These are automatically configured via `dashboard config init` and stored in `~/.dashboard/config.json`.
+These can be overridden by setting environment variables with the same names. Configuration is automatically managed via:
+
+```bash
+dashboard config init <name> [directory]
+dashboard config set <name> <key> <value>
+```
+
+Valid keys for `config set`: `CONTAINER_DIR`, `CHECKOUTS_DIR`, `REPO_CLONE_PATH`
 
 ## Python dependencies
 

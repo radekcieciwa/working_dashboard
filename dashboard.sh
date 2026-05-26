@@ -21,21 +21,21 @@ function load_config() {
 }
 
 # Load config if not already set
-if [ -z "$BADOO_REPO_DIR" ]; then
+if [ -z "$CONTAINER_DIR" ]; then
   load_config
 fi
 
 # Allow environment variable overrides
-export TICKETS_WORKSPACE_DIR="${TICKETS_WORKSPACE_DIR:-$BADOO_REPO_DIR}"
-export SOURCE_REPO_PATH="${SOURCE_REPO_PATH:-$BADOO_REPO_SRC}"
+export CHECKOUTS_DIR="${CHECKOUTS_DIR:-$CONTAINER_DIR}"
+export REPO_CLONE_PATH="${REPO_CLONE_PATH:-$REPO_CLONE_PATH}"
 
 function query_list_of_repos_by_coma() {
-  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | tail -n +2  | awk '{ print $1 }' | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
+  local LIST_OF_REPOS=`git -C $REPO_CLONE_PATH worktree list | tail -n +2  | awk '{ print $1 }' | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
   echo $LIST_OF_REPOS
 }
 
 function query_list_of_repos() {
-  local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | tail -n +2 | awk '{ print $1 }' | sed 's#.*/##'`
+  local LIST_OF_REPOS=`git -C $REPO_CLONE_PATH worktree list | tail -n +2 | awk '{ print $1 }' | sed 's#.*/##'`
   echo $LIST_OF_REPOS
 }
 
@@ -48,7 +48,7 @@ function usage() {
   echo "configuration"
   echo "  config list             list all configured repositories"
   echo "  config init <name> [dir] initialize configuration for a repository"
-  echo "  config set <name> <key> <value>  set a configuration value"
+  echo "  config set <name> <key> <value>  set a configuration value (CONTAINER_DIR, CHECKOUTS_DIR, REPO_CLONE_PATH)"
   echo "  config switch <name>    switch the default repository"
   echo
   echo "authentication"
@@ -117,7 +117,7 @@ function dashboard() {
     $DASHBOARD_DIR/dashboard-ticket-boot.sh ${@:2}
     if [ $? -eq 0 ]; then
       # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
-      cd "$TICKETS_WORKSPACE_DIR/$2"
+      cd "$CHECKOUTS_DIR/$2"
     fi
   elif [ "$COMMAND" = "title" ]; then
     $DASHBOARD_DIR/dashboard-terminal-title.sh
@@ -135,12 +135,12 @@ function dashboard() {
       deactivate
 
       if [ $EXIT_CODE -eq 0 ] && [ -n "$SELECTED_TICKET" ]; then
-        cd "$TICKETS_WORKSPACE_DIR/$SELECTED_TICKET"
+        cd "$CHECKOUTS_DIR/$SELECTED_TICKET"
       else
         return 1
       fi
     elif [ "$#" -eq 2 ]; then
-      cd "$TICKETS_WORKSPACE_DIR/$2"
+      cd "$CHECKOUTS_DIR/$2"
     else
       usage
       return 1

@@ -18,13 +18,13 @@ TICKET_NUMBER=$1
 TICKET_DIR_NAME="$1"
 
 echo "Booting $TICKET_NUMBER..."
-git -C $SOURCE_REPO_PATH worktree add "$TICKETS_WORKSPACE_DIR/$TICKET_DIR_NAME"
+git -C $REPO_CLONE_PATH worktree add "$CHECKOUTS_DIR/$TICKET_DIR_NAME"
 if [ $? -ne 0 ]; then
   exit 1
 fi
 
 echo "Aida process..."
-cd "$TICKETS_WORKSPACE_DIR/$TICKET_DIR_NAME"
+cd "$CHECKOUTS_DIR/$TICKET_DIR_NAME"
 pwd
 ./aida -ei $TICKET_NUMBER
 if [ $? -ne 0 ]; then

@@ -40,7 +40,7 @@ def list_repos():
     for name, settings in config["repositories"].items():
         default_marker = " (default)" if name == config.get("default") else ""
         print(f"  {name}{default_marker}")
-        print(f"    BADOO_REPO_DIR: {settings.get('BADOO_REPO_DIR', 'N/A')}")
+        print(f"    CONTAINER_DIR: {settings.get('CONTAINER_DIR', 'N/A')}")
 
 def init_repo(repo_name, repo_dir=None):
     """Initialize a new repository configuration."""
@@ -54,18 +54,14 @@ def init_repo(repo_name, repo_dir=None):
 
     config = load_config()
 
-    dashboard_dir = repo_dir  # Assume dashboard is in repo root or nearby
-    if os.path.exists(os.path.join(repo_dir, "working_dashboard")):
-        dashboard_dir = os.path.join(repo_dir, "working_dashboard")
-
-    tickets_workspace = repo_dir
-    source_repo = os.path.join(repo_dir, "_source")
+    container_dir = repo_dir
+    checkouts_dir = os.path.join(repo_dir, "_tickets")
+    repo_clone_path = os.path.join(repo_dir, "bumble")  # Or detect from git
 
     config["repositories"][repo_name] = {
-        "BADOO_REPO_DIR": repo_dir,
-        "DASHBOARD_DIR": dashboard_dir,
-        "TICKETS_WORKSPACE_DIR": tickets_workspace,
-        "SOURCE_REPO_PATH": source_repo
+        "CONTAINER_DIR": container_dir,
+        "CHECKOUTS_DIR": checkouts_dir,
+        "REPO_CLONE_PATH": repo_clone_path
     }
 
     if not config.get("default"):
@@ -73,10 +69,9 @@ def init_repo(repo_name, repo_dir=None):
 
     save_config(config)
     print(f"Configured repository '{repo_name}':")
-    print(f"  BADOO_REPO_DIR: {repo_dir}")
-    print(f"  DASHBOARD_DIR: {dashboard_dir}")
-    print(f"  TICKETS_WORKSPACE_DIR: {tickets_workspace}")
-    print(f"  SOURCE_REPO_PATH: {source_repo}")
+    print(f"  CONTAINER_DIR: {container_dir}")
+    print(f"  CHECKOUTS_DIR: {checkouts_dir}")
+    print(f"  REPO_CLONE_PATH: {repo_clone_path}")
     return True
 
 def get_repo_config(repo_name=None):
@@ -99,7 +94,7 @@ def set_value(repo_name, key, value):
         print(f"Error: Repository '{repo_name}' not found")
         return False
 
-    valid_keys = ["BADOO_REPO_DIR", "DASHBOARD_DIR", "TICKETS_WORKSPACE_DIR", "SOURCE_REPO_PATH"]
+    valid_keys = ["CONTAINER_DIR", "CHECKOUTS_DIR", "REPO_CLONE_PATH"]
     if key not in valid_keys:
         print(f"Error: Invalid key '{key}'. Valid keys are: {', '.join(valid_keys)}")
         return False

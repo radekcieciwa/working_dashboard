@@ -13,18 +13,18 @@ function usage() {
 function delete_worktree_checkout() {
   if [ "$FORCE_CLEANUP" = "1" ]; then
     rm -rf $1
-    git -C $SOURCE_REPO_PATH worktree prune
-    git -C $SOURCE_REPO_PATH worktree remove --force $1
+    git -C $REPO_CLONE_PATH worktree prune
+    git -C $REPO_CLONE_PATH worktree remove --force $1
   else
-    git -C $SOURCE_REPO_PATH worktree remove $1
+    git -C $REPO_CLONE_PATH worktree remove $1
   fi
 }
 
 function delete_branch() {
   if [ "$FORCE_CLEANUP" = "1" ]; then
-    git -C $SOURCE_REPO_PATH branch --force -D $1
+    git -C $REPO_CLONE_PATH branch --force -D $1
   else
-    git -C $SOURCE_REPO_PATH branch -d $1
+    git -C $REPO_CLONE_PATH branch -d $1
   fi
 }
 
@@ -54,7 +54,7 @@ fi
 
 delete_worktree_checkout $TICKET
 
-git -C $SOURCE_REPO_PATH branch | grep $TICKET | while read -r branch ; do
+git -C $REPO_CLONE_PATH branch | grep $TICKET | while read -r branch ; do
   delete_branch $branch
 done
 
