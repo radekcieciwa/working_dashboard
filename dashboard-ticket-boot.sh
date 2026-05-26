@@ -23,12 +23,13 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-echo "Aida process..."
-cd "$CHECKOUTS_DIR/$TICKET_DIR_NAME"
-pwd
-./aida -ei $TICKET_NUMBER
-if [ $? -ne 0 ]; then
-  exit 1  # or $?
-else
-  echo "Successfully created: $TICKET_NUMBER"
+# Run post-boot script if configured
+if [ ! -z "$POST_BOOT_SCRIPT" ] && [ -f "$POST_BOOT_SCRIPT" ]; then
+  cd "$CHECKOUTS_DIR/$TICKET_DIR_NAME"
+  bash "$POST_BOOT_SCRIPT" "$TICKET_NUMBER"
+  if [ $? -ne 0 ]; then
+    exit 1
+  fi
 fi
+
+echo "Successfully created: $TICKET_NUMBER"

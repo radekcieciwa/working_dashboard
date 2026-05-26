@@ -94,7 +94,7 @@ def set_value(repo_name, key, value):
         print(f"Error: Repository '{repo_name}' not found")
         return False
 
-    valid_keys = ["CONTAINER_DIR", "CHECKOUTS_DIR", "REPO_CLONE_PATH"]
+    valid_keys = ["CONTAINER_DIR", "CHECKOUTS_DIR", "REPO_CLONE_PATH", "POST_BOOT_SCRIPT"]
     if key not in valid_keys:
         print(f"Error: Invalid key '{key}'. Valid keys are: {', '.join(valid_keys)}")
         return False

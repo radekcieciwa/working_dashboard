@@ -139,7 +139,26 @@ dashboard config init <name> [directory]
 dashboard config set <name> <key> <value>
 ```
 
-Valid keys for `config set`: `CONTAINER_DIR`, `CHECKOUTS_DIR`, `REPO_CLONE_PATH`
+Valid keys for `config set`: `CONTAINER_DIR`, `CHECKOUTS_DIR`, `REPO_CLONE_PATH`, `POST_BOOT_SCRIPT`
+
+### Post-Boot Scripts
+
+You can define a custom post-boot script that runs after a new worktree is created. This is useful for repository-specific initialization (e.g., running build scripts, setting up dependencies).
+
+Configure it:
+```bash
+dashboard config set bumble POST_BOOT_SCRIPT /path/to/script.sh
+```
+
+The script receives the ticket number as an argument and runs in the newly created checkout directory:
+```bash
+#!/bin/bash
+TICKET_NUMBER=$1
+# Custom initialization here
+./aida -ei $TICKET_NUMBER
+```
+
+Post-boot scripts are optional - if not configured, only the worktree is created.
 
 ## Python dependencies
 
