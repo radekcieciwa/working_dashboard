@@ -21,11 +21,6 @@ function load_config() {
   fi
 }
 
-# Load config if not already set
-if [ -z "$CONTAINER_DIR" ]; then
-  load_config "$REPO_NAME"
-fi
-
 # Allow environment variable overrides
 export CHECKOUTS_DIR="${CHECKOUTS_DIR:-$CONTAINER_DIR}"
 export REPO_CLONE_PATH="${REPO_CLONE_PATH:-$REPO_CLONE_PATH}"
@@ -81,16 +76,22 @@ function check_venv() {
 }
 
 function dashboard() {
-  COMMAND=$1
   REPO_NAME=""
 
-  # Check for --repo flag
-  if [ "$2" = "--repo" ] && [ ! -z "$3" ]; then
-    REPO_NAME=$3
-    # Shift arguments to remove --repo and repo name
+  # Check for --repo flag at the beginning
+  if [ "$1" = "--repo" ] && [ ! -z "$2" ]; then
+    REPO_NAME=$2
+    # Remove --repo and repo name from arguments
     shift 2
-    COMMAND=$1
   fi
+
+  COMMAND=$1
+
+  # Load config if not already set
+  if [ -z "$CONTAINER_DIR" ]; then
+    load_config "$REPO_NAME"
+  fi
+
   if [ "$COMMAND" = "token" ]; then
     if [ "$#" -ne 2 ]; then
         echo "Error: Token argument is required"
