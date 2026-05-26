@@ -5,8 +5,29 @@
 # Entry point tool for dashboard.
 #
 
-export TICKETS_WORKSPACE_DIR="$BADOO_REPO_DIR"
-export SOURCE_REPO_PATH="$BADOO_REPO_SRC"
+# Load configuration from central config manager if available
+function load_config() {
+  DASHBOARD_DIR="${DASHBOARD_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+
+  if [ -d "$DASHBOARD_DIR/venv" ]; then
+    source "$DASHBOARD_DIR/venv/bin/activate" 2>/dev/null
+    local VARS=$(python3 "$DASHBOARD_DIR/jira_config.py" export 2>/dev/null)
+    deactivate 2>/dev/null
+
+    if [ ! -z "$VARS" ]; then
+      eval "$VARS"
+    fi
+  fi
+}
+
+# Load config if not already set
+if [ -z "$BADOO_REPO_DIR" ]; then
+  load_config
+fi
+
+# Allow environment variable overrides
+export TICKETS_WORKSPACE_DIR="${TICKETS_WORKSPACE_DIR:-$BADOO_REPO_DIR}"
+export SOURCE_REPO_PATH="${SOURCE_REPO_PATH:-$BADOO_REPO_SRC}"
 
 function query_list_of_repos_by_coma() {
   local LIST_OF_REPOS=`git -C $SOURCE_REPO_PATH worktree list | tail -n +2  | awk '{ print $1 }' | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`
@@ -23,6 +44,12 @@ function usage() {
   echo
   echo "Most common usages"
   echo "you can run this command from any directory"
+  echo
+  echo "configuration"
+  echo "  config list             list all configured repositories"
+  echo "  config init <name> [dir] initialize configuration for a repository"
+  echo "  config set <name> <key> <value>  set a configuration value"
+  echo "  config switch <name>    switch the default repository"
   echo
   echo "authentication"
   echo "  token <TOKEN>           stores authentication token in keychain"
@@ -70,6 +97,19 @@ function dashboard() {
     fi
     source $DASHBOARD_DIR/venv/bin/activate
     python3 $DASHBOARD_DIR/jira_verify_token.py
+    EXIT_CODE=$?
+    deactivate
+    return $EXIT_CODE
+  elif [ "$COMMAND" = "config" ]; then
+    if [ "$#" -lt 2 ]; then
+      usage
+      return 1
+    fi
+    if ! check_venv; then
+      return 1
+    fi
+    source $DASHBOARD_DIR/venv/bin/activate
+    python3 $DASHBOARD_DIR/jira_config.py ${@:2}
     EXIT_CODE=$?
     deactivate
     return $EXIT_CODE

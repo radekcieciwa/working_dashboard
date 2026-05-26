@@ -72,21 +72,43 @@ The installation script will:
 - Install all required dependencies from `requirements.txt`
 - Set executable permissions on Python scripts
 
-### 2. Configure your shell
+### 2. Configure your repository
 
-Add this to your `~/.bash_profile` or `~/.zshrc` file:
+You can use the new central configuration manager to set up multiple repositories without editing shell config files.
+
+Initialize your repository configuration:
 
 ```bash
-export BADOO_REPO_DIR="/Users/`whoami`/Development/iOS/Badoo"
-export DASHBOARD_DIR="$BADOO_REPO_DIR/working_dashboard"
+dashboard config init badoo /Users/$(whoami)/Development/iOS/Badoo
+```
 
-# This will source main dashboard.sh script. It's important to be able to enter directory after creating the ticket.
+Then add this to your `~/.bash_profile` or `~/.zshrc` file:
+
+```bash
+export DASHBOARD_DIR="/path/to/working_dashboard"
 source $DASHBOARD_DIR/dashboard.sh
 ```
 
-#### Why?
+The dashboard will automatically load your default repository configuration.
 
-Previously I dependent only on directory convention, which were hardcoded in scripts. Now, they are controlled by env variables.
+#### Configuration Commands
+
+```bash
+# List all configured repositories
+dashboard config list
+
+# Initialize a new repository (auto-detects paths)
+dashboard config init <repo-name> [directory]
+
+# Set a specific configuration value
+dashboard config set <repo-name> BADOO_REPO_DIR /path/to/repo
+
+# Switch the default repository
+dashboard config switch <repo-name>
+
+# Export shell variables for a repository
+dashboard config export <repo-name>
+```
 
 ### 3. Set up authentication
 
@@ -102,18 +124,16 @@ On first use, the scripts will also prompt you for:
 
 These credentials are stored securely in your system keychain.
 
-### Default setup
+### Configuration Variables
 
-Default setup is in `dashboard.sh`, but you can override it by exporting your own values to those variables:
+The following environment variables can be set to override the default configuration:
 
-```bash
-export TICKETS_WORKSPACE_DIR="$BADOO_REPO_DIR"
-export SOURCE_REPO_PATH="$BADOO_REPO_DIR/_source"
-```
+- `BADOO_REPO_DIR` - Main repository directory
+- `DASHBOARD_DIR` - Dashboard script location
+- `TICKETS_WORKSPACE_DIR` - Where to create worktree copies (defaults to `BADOO_REPO_DIR`)
+- `SOURCE_REPO_PATH` - Original working copy directory for maintaining neutral branch (defaults to `BADOO_REPO_DIR/_source`)
 
-`SOURCE_REPO_PATH` - **this is your original (and only one) working copy directory, keep on some neutral branch, like `dev` or `master`**
-
-`TICKETS_WORKSPACE_DIR` - place where you want to add your worktree copies
+These are automatically configured via `dashboard config init` and stored in `~/.dashboard/config.json`.
 
 ## Python dependencies
 
