@@ -21,13 +21,9 @@ function load_config() {
 }
 
 # Load config on startup
-if [ -z "$CONTAINER_DIR" ]; then
+if [ -z "$REPO_CLONE_PATH" ]; then
   load_config
 fi
-
-# Allow environment variable overrides
-export CHECKOUTS_DIR="${CHECKOUTS_DIR:-$CONTAINER_DIR}"
-export REPO_CLONE_PATH="${REPO_CLONE_PATH:-$REPO_CLONE_PATH}"
 
 function query_list_of_repos_by_coma() {
   local LIST_OF_REPOS=`git -C $REPO_CLONE_PATH worktree list | tail -n +2  | awk '{ print $1 }' | sed 's#.*/##' | awk 'ORS=","' | sed 's/\(.*\),/\1 /'`

@@ -39,32 +39,36 @@ def list_repos():
     print("Configured repositories:")
     for name, settings in config["repositories"].items():
         current_marker = " (current)" if name == config.get("current") else ""
-        container_dir = settings.get('CONTAINER_DIR', 'N/A')
         checkouts_dir = settings.get('CHECKOUTS_DIR', 'N/A')
         repo_clone_path = settings.get('REPO_CLONE_PATH', 'N/A')
         print(f"  {name}{current_marker}")
-        print(f"    Container: {container_dir}")
-        print(f"    Clone:     {repo_clone_path}")
-        print(f"    Tickets:   {checkouts_dir}")
+        print(f"    Clone:   {repo_clone_path}")
+        print(f"    Tickets: {checkouts_dir}")
 
-def init_repo(repo_name, repo_dir=None):
+def init_repo(repo_name, repo_clone_path=None, checkouts_dir=None):
     """Initialize a new repository configuration."""
-    if repo_dir is None:
-        repo_dir = os.getcwd()
+    if repo_clone_path is None:
+        print(f"Usage: dashboard config init <name> <clone_path> <checkouts_path>")
+        return False
 
-    repo_dir = os.path.abspath(repo_dir)
-    if not os.path.isdir(repo_dir):
-        print(f"Error: Directory '{repo_dir}' does not exist")
+    if checkouts_dir is None:
+        print(f"Usage: dashboard config init <name> <clone_path> <checkouts_path>")
+        return False
+
+    repo_clone_path = os.path.abspath(repo_clone_path)
+    checkouts_dir = os.path.abspath(checkouts_dir)
+
+    if not os.path.isdir(repo_clone_path):
+        print(f"Error: Clone directory '{repo_clone_path}' does not exist")
+        return False
+
+    if not os.path.isdir(checkouts_dir):
+        print(f"Error: Checkouts directory '{checkouts_dir}' does not exist")
         return False
 
     config = load_config()
 
-    container_dir = repo_dir
-    checkouts_dir = os.path.join(repo_dir, "_tickets")
-    repo_clone_path = os.path.join(repo_dir, "bumble")  # Or detect from git
-
     config["repositories"][repo_name] = {
-        "CONTAINER_DIR": container_dir,
         "CHECKOUTS_DIR": checkouts_dir,
         "REPO_CLONE_PATH": repo_clone_path
     }
@@ -74,9 +78,8 @@ def init_repo(repo_name, repo_dir=None):
 
     save_config(config)
     print(f"Configured repository '{repo_name}':")
-    print(f"  CONTAINER_DIR: {container_dir}")
-    print(f"  CHECKOUTS_DIR: {checkouts_dir}")
-    print(f"  REPO_CLONE_PATH: {repo_clone_path}")
+    print(f"  Clone:   {repo_clone_path}")
+    print(f"  Tickets: {checkouts_dir}")
     return True
 
 def get_repo_config(repo_name=None):
@@ -90,24 +93,6 @@ def get_repo_config(repo_name=None):
         return None
 
     return config["repositories"][repo_name]
-
-def set_value(repo_name, key, value):
-    """Set a configuration value for a repository."""
-    config = load_config()
-
-    if repo_name not in config["repositories"]:
-        print(f"Error: Repository '{repo_name}' not found")
-        return False
-
-    valid_keys = ["CONTAINER_DIR", "CHECKOUTS_DIR", "REPO_CLONE_PATH", "POST_BOOT_SCRIPT"]
-    if key not in valid_keys:
-        print(f"Error: Invalid key '{key}'. Valid keys are: {', '.join(valid_keys)}")
-        return False
-
-    config["repositories"][repo_name][key] = value
-    save_config(config)
-    print(f"Set {repo_name}.{key} = {value}")
-    return True
 
 def switch_current(repo_name):
     """Switch the current repository."""
@@ -137,14 +122,11 @@ def export_shell_vars(repo_name=None):
 
 def main():
     if len(sys.argv) < 2:
-        print("Usage: jira_config.py <command> [args]")
+        print("Usage: dashboard config <command> [args]")
         print("Commands:")
-        print("  list              List all configured repositories")
-        print("  init <name> [dir] Initialize a new repository configuration")
-        print("  get <name>        Get configuration for a repository")
-        print("  set <name> <key> <value>  Set a configuration value")
-        print("  switch <name>     Switch the default repository")
-        print("  export [name]     Export shell variables for a repository")
+        print("  list                          List all configured repositories")
+        print("  init <name> <clone> <tickets> Initialize a new repository")
+        print("  switch <name>                 Switch the current repository")
         return 1
 
     cmd = sys.argv[1]
@@ -152,27 +134,13 @@ def main():
     if cmd == "list":
         list_repos()
     elif cmd == "init":
-        if len(sys.argv) < 3:
-            print("Usage: jira_config.py init <name> [directory]")
+        if len(sys.argv) < 5:
+            print("Usage: dashboard config init <name> <clone_path> <checkouts_path>")
             return 1
         repo_name = sys.argv[2]
-        repo_dir = sys.argv[3] if len(sys.argv) > 3 else None
-        init_repo(repo_name, repo_dir)
-    elif cmd == "get":
-        if len(sys.argv) < 3:
-            print("Usage: jira_config.py get <name>")
-            return 1
-        repo_config = get_repo_config(sys.argv[2])
-        if repo_config:
-            print(json.dumps(repo_config, indent=2))
-        else:
-            print(f"Repository '{sys.argv[2]}' not found")
-            return 1
-    elif cmd == "set":
-        if len(sys.argv) < 5:
-            print("Usage: jira_config.py set <name> <key> <value>")
-            return 1
-        set_value(sys.argv[2], sys.argv[3], sys.argv[4])
+        repo_clone_path = sys.argv[3]
+        checkouts_dir = sys.argv[4]
+        init_repo(repo_name, repo_clone_path, checkouts_dir)
     elif cmd == "switch":
         if len(sys.argv) < 3:
             print("Usage: jira_config.py switch <name>")

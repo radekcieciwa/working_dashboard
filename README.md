@@ -113,10 +113,10 @@ The dashboard will automatically load your default repository configuration.
 # List all configured repositories
 dashboard config list
 
-# Initialize a new repository (auto-detects paths)
-dashboard config init <repo-name> [directory]
+# Initialize a new repository
+dashboard config init <repo-name> <clone-path> <tickets-path>
 
-# Switch the default repository
+# Switch the current repository
 dashboard config switch <repo-name>
 ```
 
@@ -138,12 +138,11 @@ These credentials are stored securely in your system keychain.
 
 The following environment variables are stored in `~/.dashboard/config.json`:
 
-- `CONTAINER_DIR` - Main container/repository directory
-- `CHECKOUTS_DIR` - Where to create worktree checkouts for tickets
-- `REPO_CLONE_PATH` - Path to the main source repository clone
+- `REPO_CLONE_PATH` - Path to the source repository clone (where worktrees are created)
+- `CHECKOUTS_DIR` - Path to where worktree checkouts for tickets are created
 - `POST_BOOT_SCRIPT` - (Optional) Post-boot script to run after worktree creation
 
-These are automatically configured via `dashboard config init`.
+These paths can be anywhere and are independent. They are configured via `dashboard config init <name> <clone-path> <tickets-path>`.
 
 ### Post-Boot Scripts
 
