@@ -42,24 +42,23 @@ function usage() {
   echo "you can run this command from any directory"
   echo
   echo "configuration"
-  echo "  config list             list all configured repositories"
-  echo "  config init <name> [dir] initialize configuration for a repository"
-  echo "  config switch <name>    switch the default repository"
+  echo "  config list                           list all configured repositories"
+  echo "  config init <name> <clone> <tickets>  initialize configuration for a repository"
+  echo "  config switch <name>                  switch the current repository"
   echo
   echo "authentication"
-  echo "  token <TOKEN>           stores authentication token in keychain"
-  echo "  token-verify            verify token is valid and connection works"
+  echo "  token <TOKEN>                         store authentication token in keychain"
+  echo "  token-verify                          verify token is valid and connection works"
   echo
-  echo "controls the jira ticket (creates a new branch) lifecycle"
-  echo "  boot    runs aida process and enters the folder"
-  echo "  delete  cleans local branches and worktree copy"
-  echo "  delete-batch [-s STATUS]  cleans local branches and worktree copy for tickets by status"
-  echo "              interactive status selection if -s not provided"
+  echo "jira ticket lifecycle"
+  echo "  boot <TICKET>                         create worktree and run post-boot script"
+  echo "  delete <TICKET>                       clean local branches and worktree"
+  echo "  delete-batch [-s STATUS]              clean tickets by status (interactive if -s not provided)"
   echo
   echo "view operations"
-  echo "  view    display list of tickets (require jira credentials and python)"
-  echo "  open [TICKET]  opens a directory with the script or interactive selection if no ticket provided"
-  echo "  title   get's ticket container and try to fetch summary to set to title tab"
+  echo "  view                                  display list of tickets"
+  echo "  open [TICKET]                         open ticket directory (interactive if no TICKET)"
+  echo "  title                                 set terminal title with ticket summary"
 }
 
 function check_venv() {
