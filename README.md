@@ -128,11 +128,13 @@ Store your JIRA API token securely in the keychain:
 dashboard token YOUR_JIRA_API_TOKEN
 ```
 
-On first use, the scripts will also prompt you for:
-* Server URL (e.g., `https://your.domain.co.uk`)
-* User email (e.g., `john.doe@company.com`)
+**On first use** of any dashboard command, you'll be prompted for:
 
-These credentials are stored securely in your system keychain.
+* **Server** — The full JIRA server URL (e.g., `https://jira.company.com` or `https://your.domain.co.uk`). This is the domain you visit in your browser, not a file path.
+* **User** — Your JIRA account email address (e.g., `john.doe@company.com`)
+* **Token** — A personal access token generated from JIRA. Get it from JIRA Settings → Personal Access Tokens → Create Token. Use the token value, not your password.
+
+All credentials are stored securely in your system keychain and won't be prompted again.
 
 ### Configuration Variables
 
@@ -176,18 +178,21 @@ To upgrade dependencies:
 ./upgrade.sh
 ```
 
-## Managing credentials
+## Troubleshooting
 
-### To clean keychain entries
+### Reset stored credentials
 
-* Go to Keychain Access app
-* Search for `jira_script`
-* Remove entries
+If you need to change your JIRA credentials:
 
-Or use the command line:
 ```bash
-security delete-generic-password -s "jira_script" -a "token"
-security delete-generic-password -s "jira_script" -a "server"
-security delete-generic-password -s "jira_script" -a "user"
+# Reset just the token (personal access token from JIRA Settings)
+dashboard token YOUR_NEW_TOKEN
+
+# Reset everything (server URL, email, and token will be re-prompted)
+security delete-generic-password -s "jira_script" -a "token"      # Personal access token
+security delete-generic-password -s "jira_script" -a "server"     # JIRA server URL
+security delete-generic-password -s "jira_script" -a "user"       # JIRA email address
+
+# Or use Keychain Access app: Search for "jira_script" and remove entries
 ```
 
