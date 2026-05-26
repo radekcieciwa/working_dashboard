@@ -4,15 +4,18 @@
 
 ### Repository Selection
 
-By default, commands use the configured default repository. To use a non-default repository, use the `--repo` flag:
+All commands use the current repository. Switch repositories using the `config switch` command:
 
 ```bash
-# Use default repository (bumble)
-dashboard boot IOS-123
+# See which repository is current
+dashboard config list
 
-# Use a specific repository
-dashboard --repo staging boot IOS-123
-dashboard --repo other-repo view
+# Switch to a different repository
+dashboard config switch staging
+
+# Now all commands use the staging repository
+dashboard boot IOS-123
+dashboard view
 ```
 
 ### Authentication

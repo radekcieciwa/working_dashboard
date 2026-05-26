@@ -15,13 +15,13 @@ def ensure_config_dir():
 def load_config():
     """Load configuration from file."""
     if not CONFIG_FILE.exists():
-        return {"repositories": {}, "default": None}
+        return {"repositories": {}, "current": None}
 
     try:
         with open(CONFIG_FILE, 'r') as f:
             return json.load(f)
     except (json.JSONDecodeError, IOError):
-        return {"repositories": {}, "default": None}
+        return {"repositories": {}, "current": None}
 
 def save_config(config):
     """Save configuration to file."""
@@ -38,9 +38,9 @@ def list_repos():
 
     print("Configured repositories:")
     for name, settings in config["repositories"].items():
-        default_marker = " (default)" if name == config.get("default") else ""
+        current_marker = " (current)" if name == config.get("current") else ""
         container_dir = settings.get('CONTAINER_DIR', 'N/A')
-        print(f"  {name}{default_marker}")
+        print(f"  {name}{current_marker}")
         print(f"    → {container_dir}")
         print(f"    CONTAINER_DIR: {container_dir}")
         if settings.get('POST_BOOT_SCRIPT'):
@@ -68,8 +68,8 @@ def init_repo(repo_name, repo_dir=None):
         "REPO_CLONE_PATH": repo_clone_path
     }
 
-    if not config.get("default"):
-        config["default"] = repo_name
+    if not config.get("current"):
+        config["current"] = repo_name
 
     save_config(config)
     print(f"Configured repository '{repo_name}':")
@@ -83,7 +83,7 @@ def get_repo_config(repo_name=None):
     config = load_config()
 
     if repo_name is None:
-        repo_name = config.get("default")
+        repo_name = config.get("current")
 
     if not repo_name or repo_name not in config["repositories"]:
         return None
@@ -108,17 +108,17 @@ def set_value(repo_name, key, value):
     print(f"Set {repo_name}.{key} = {value}")
     return True
 
-def switch_default(repo_name):
-    """Switch the default repository."""
+def switch_current(repo_name):
+    """Switch the current repository."""
     config = load_config()
 
     if repo_name not in config["repositories"]:
         print(f"Error: Repository '{repo_name}' not found")
         return False
 
-    config["default"] = repo_name
+    config["current"] = repo_name
     save_config(config)
-    print(f"Default repository switched to '{repo_name}'")
+    print(f"Current repository switched to '{repo_name}'")
     return True
 
 def export_shell_vars(repo_name=None):
@@ -176,7 +176,7 @@ def main():
         if len(sys.argv) < 3:
             print("Usage: jira_config.py switch <name>")
             return 1
-        switch_default(sys.argv[2])
+        switch_current(sys.argv[2])
     elif cmd == "export":
         repo_name = sys.argv[2] if len(sys.argv) > 2 else None
         vars_export = export_shell_vars(repo_name)
