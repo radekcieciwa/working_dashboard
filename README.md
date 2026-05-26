@@ -2,6 +2,19 @@
 
 ## How to run
 
+### Repository Selection
+
+By default, commands use the configured default repository. To use a non-default repository, use the `--repo` flag:
+
+```bash
+# Use default repository (bumble)
+dashboard boot IOS-123
+
+# Use a specific repository
+dashboard --repo staging boot IOS-123
+dashboard --repo other-repo view
+```
+
 ### Authentication
 ```bash
 # Store your JIRA API token

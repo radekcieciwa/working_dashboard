@@ -7,11 +7,12 @@
 
 # Load configuration from central config manager if available
 function load_config() {
+  local REPO_NAME=$1
   DASHBOARD_DIR="${DASHBOARD_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
 
   if [ -d "$DASHBOARD_DIR/venv" ]; then
     source "$DASHBOARD_DIR/venv/bin/activate" 2>/dev/null
-    local VARS=$(python3 "$DASHBOARD_DIR/jira_config.py" export 2>/dev/null)
+    local VARS=$(python3 "$DASHBOARD_DIR/jira_config.py" export $REPO_NAME 2>/dev/null)
     deactivate 2>/dev/null
 
     if [ ! -z "$VARS" ]; then
@@ -22,7 +23,7 @@ function load_config() {
 
 # Load config if not already set
 if [ -z "$CONTAINER_DIR" ]; then
-  load_config
+  load_config "$REPO_NAME"
 fi
 
 # Allow environment variable overrides
@@ -40,10 +41,13 @@ function query_list_of_repos() {
 }
 
 function usage() {
-  echo "usage dashboard <command> [<args>]"
+  echo "usage dashboard [--repo <name>] <command> [<args>]"
   echo
   echo "Most common usages"
   echo "you can run this command from any directory"
+  echo
+  echo "Use --repo flag to specify a non-default repository:"
+  echo "  dashboard --repo other-repo boot IOS-123"
   echo
   echo "configuration"
   echo "  config list             list all configured repositories"
@@ -79,6 +83,15 @@ function check_venv() {
 
 function dashboard() {
   COMMAND=$1
+  REPO_NAME=""
+
+  # Check for --repo flag
+  if [ "$2" = "--repo" ] && [ ! -z "$3" ]; then
+    REPO_NAME=$3
+    # Shift arguments to remove --repo and repo name
+    shift 2
+    COMMAND=$1
+  fi
   if [ "$COMMAND" = "token" ]; then
     if [ "$#" -ne 2 ]; then
         echo "Error: Token argument is required"

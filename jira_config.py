@@ -39,8 +39,12 @@ def list_repos():
     print("Configured repositories:")
     for name, settings in config["repositories"].items():
         default_marker = " (default)" if name == config.get("default") else ""
+        container_dir = settings.get('CONTAINER_DIR', 'N/A')
         print(f"  {name}{default_marker}")
-        print(f"    CONTAINER_DIR: {settings.get('CONTAINER_DIR', 'N/A')}")
+        print(f"    → {container_dir}")
+        print(f"    CONTAINER_DIR: {container_dir}")
+        if settings.get('POST_BOOT_SCRIPT'):
+            print(f"    POST_BOOT_SCRIPT: {settings.get('POST_BOOT_SCRIPT')}")
 
 def init_repo(repo_name, repo_dir=None):
     """Initialize a new repository configuration."""
