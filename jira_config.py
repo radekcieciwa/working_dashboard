@@ -40,11 +40,12 @@ def list_repos():
     for name, settings in config["repositories"].items():
         current_marker = " (current)" if name == config.get("current") else ""
         container_dir = settings.get('CONTAINER_DIR', 'N/A')
+        checkouts_dir = settings.get('CHECKOUTS_DIR', 'N/A')
+        repo_clone_path = settings.get('REPO_CLONE_PATH', 'N/A')
         print(f"  {name}{current_marker}")
-        print(f"    → {container_dir}")
-        print(f"    CONTAINER_DIR: {container_dir}")
-        if settings.get('POST_BOOT_SCRIPT'):
-            print(f"    POST_BOOT_SCRIPT: {settings.get('POST_BOOT_SCRIPT')}")
+        print(f"    Container: {container_dir}")
+        print(f"    Clone:     {repo_clone_path}")
+        print(f"    Tickets:   {checkouts_dir}")
 
 def init_repo(repo_name, repo_dir=None):
     """Initialize a new repository configuration."""
