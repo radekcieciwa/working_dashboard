@@ -25,9 +25,10 @@ dashboard token YOUR_JIRA_API_TOKEN
 ```
 
 ### Common commands
+
 ```bash
 # Create a working directory and initiate scripts for a ticket
-dashboard boot IOS-123456
+dashboard boot <TICKET>
 
 # View tickets
 dashboard view
@@ -36,10 +37,10 @@ dashboard view
 dashboard open
 
 # Open specific ticket directory
-dashboard open IOS-123456
+dashboard open <TICKET>
 
 # Delete ticket workspace
-dashboard delete IOS-123456
+dashboard delete <TICKET>
 
 # Delete tickets by status (interactive selection)
 dashboard delete-batch
@@ -50,15 +51,15 @@ dashboard delete-batch -s "In Release branch"
 
 ### Command reference
 
-**token** - Store authentication token in keychain
+**token `<TOKEN>`** - Store authentication token in keychain
 
-**boot** - Create a working directory and initiate the scripts for ticket
+**boot `<TICKET>`** - Create a working directory and initiate the scripts for ticket
 
-**open** - Opens the directory for ticket. If no ticket key is provided, displays an interactive menu to select from current tickets (use arrow keys to navigate, Enter to select)
+**open `[TICKET]`** - Opens the directory for ticket. If no ticket key is provided, displays an interactive menu to select from current tickets (use arrow keys to navigate, Enter to select)
 
 **view** - Display list of tickets (requires JIRA credentials)
 
-**delete** - Clean local branches and worktree copy for a specific ticket
+**delete `<TICKET>`** - Clean local branches and worktree copy for a specific ticket
 
 **delete-batch** - Clean local branches and worktree copy for tickets by status. If no status is provided with `-s` flag, displays an interactive menu to select from available statuses in your current tickets (use arrow keys to navigate, Enter to select). Options:
   - `-s STATUS` - Specify status directly (e.g., `-s "Closed"`)
@@ -66,13 +67,12 @@ dashboard delete-batch -s "In Release branch"
   - `-f` - Skip confirmation prompts
   - `-F` - Skip force delete prompts
 
-**cleanup** - Clean done tickets by status and remove derived data
+**config list** - List all configured repositories with current selection
 
-### Create working copy fast and prototype the solution, end with a patch
+**config init `<name> <clone-path> <tickets-path>`** - Initialize a new repository configuration
 
-**boot-random** - creates a working directory, without any scripts
+**config switch `<name>`** - Switch the current repository
 
-**patch-close** - remove working directory and creates the patch in main directory with the same file name as working directory
 
 ## How to install
 
