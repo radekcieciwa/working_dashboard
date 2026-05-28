@@ -42,6 +42,7 @@ function usage() {
   echo "you can run this command from any directory"
   echo
   echo "configuration"
+  echo "  config current                        show current repository setup"
   echo "  config list                           list all configured repositories"
   echo "  config init <name> <clone> <tickets>  initialize configuration for a repository"
   echo "  config switch <name>                  switch the current repository"
@@ -106,6 +107,11 @@ function dashboard() {
     python3 $DASHBOARD_DIR/jira_config.py ${@:2}
     EXIT_CODE=$?
     deactivate
+
+    if [ "$EXIT_CODE" -eq 0 ] && [ "$2" = "switch" ]; then
+      load_config
+    fi
+
     return $EXIT_CODE
   elif [ "$COMMAND" = "boot" ]; then
     $DASHBOARD_DIR/dashboard-ticket-boot.sh ${@:2}

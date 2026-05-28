@@ -120,10 +120,30 @@ def export_shell_vars(repo_name=None):
 
     return "\n".join(exports)
 
+def get_current():
+    """Print the current repository name and details."""
+    config = load_config()
+    current = config.get("current")
+
+    if not current:
+        print("No current repository configured")
+        return 1
+
+    repo_config = config["repositories"].get(current)
+    if not repo_config:
+        print(f"Error: Current repository '{current}' not found in configuration")
+        return 1
+
+    print(f"Current repository: {current}")
+    print(f"  Clone:   {repo_config.get('REPO_CLONE_PATH', 'N/A')}")
+    print(f"  Tickets: {repo_config.get('CHECKOUTS_DIR', 'N/A')}")
+    return 0
+
 def main():
     if len(sys.argv) < 2:
         print("Usage: dashboard config <command> [args]")
         print("Commands:")
+        print("  current                       Show current repository")
         print("  list                          List all configured repositories")
         print("  init <name> <clone> <tickets> Initialize a new repository")
         print("  switch <name>                 Switch the current repository")
@@ -131,7 +151,9 @@ def main():
 
     cmd = sys.argv[1]
 
-    if cmd == "list":
+    if cmd == "current":
+        return get_current()
+    elif cmd == "list":
         list_repos()
     elif cmd == "init":
         if len(sys.argv) < 5:

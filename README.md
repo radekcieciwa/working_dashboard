@@ -27,6 +27,9 @@ dashboard token YOUR_JIRA_API_TOKEN
 ### Common commands
 
 ```bash
+# Check current repository setup
+dashboard config current
+
 # Create a working directory and initiate scripts for a ticket
 dashboard boot <TICKET>
 
@@ -66,6 +69,8 @@ dashboard delete-batch -s "In Release branch"
   - `-n` - Dry run mode (show what would be deleted without deleting)
   - `-f` - Skip confirmation prompts
   - `-F` - Skip force delete prompts
+
+**config current** - Display the current repository setup with clone and tickets paths
 
 **config list** - List all configured repositories with current selection
 
@@ -110,6 +115,9 @@ The dashboard will automatically load your default repository configuration.
 #### Configuration Commands
 
 ```bash
+# Show current repository setup
+dashboard config current
+
 # List all configured repositories
 dashboard config list
 
