@@ -8,6 +8,9 @@ from pathlib import Path
 CONFIG_DIR = Path.home() / ".dashboard"
 CONFIG_FILE = CONFIG_DIR / "config.json"
 
+# Boot strategy used when a repository does not specify one.
+DEFAULT_BOOT_SCRIPT = "default-boot.sh"
+
 def ensure_config_dir():
     """Create config directory if it doesn't exist."""
     CONFIG_DIR.mkdir(exist_ok=True, parents=True)
@@ -41,12 +44,18 @@ def list_repos():
         current_marker = " (current)" if name == config.get("current") else ""
         checkouts_dir = settings.get('CHECKOUTS_DIR', 'N/A')
         repo_clone_path = settings.get('REPO_CLONE_PATH', 'N/A')
+        boot_script = settings.get('BOOT_SCRIPT', DEFAULT_BOOT_SCRIPT)
         print(f"  {name}{current_marker}")
         print(f"    Clone:   {repo_clone_path}")
         print(f"    Tickets: {checkouts_dir}")
+        print(f"    Boot:    {boot_script}")
 
 def init_repo(repo_name, repo_clone_path=None, checkouts_dir=None):
-    """Initialize a new repository configuration."""
+    """Initialize a new repository configuration.
+
+    The boot strategy (BOOT_SCRIPT) is intentionally not set here: it defaults
+    to default-boot.sh and can be changed by editing config.json manually.
+    """
     if repo_clone_path is None:
         print(f"Usage: dashboard config init <name> <clone_path> <checkouts_path>")
         return False
@@ -137,6 +146,7 @@ def get_current():
     print(f"Current repository: {current}")
     print(f"  Clone:   {repo_config.get('REPO_CLONE_PATH', 'N/A')}")
     print(f"  Tickets: {repo_config.get('CHECKOUTS_DIR', 'N/A')}")
+    print(f"  Boot:    {repo_config.get('BOOT_SCRIPT', DEFAULT_BOOT_SCRIPT)}")
     return 0
 
 def main():
