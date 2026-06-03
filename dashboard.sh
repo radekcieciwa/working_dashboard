@@ -35,6 +35,31 @@ function query_list_of_repos() {
   echo $LIST_OF_REPOS
 }
 
+# Resolve a worktree directory name from a ticket key. An exact match wins;
+# otherwise any worktree directory containing the key matches (so that
+# IAT-1234 opens IAT-1234-summary-is-long created by jira-boot.sh). Prints the
+# resolved directory name on STDOUT, or nothing (non-zero) if none match.
+function resolve_worktree_dir() {
+  local key="$1"
+
+  if [ -d "$CHECKOUTS_DIR/$key" ]; then
+    echo "$key"
+    return 0
+  fi
+
+  local matches=`ls -1 "$CHECKOUTS_DIR" 2>/dev/null | grep -F -- "$key"`
+  if [ -z "$matches" ]; then
+    return 1
+  fi
+
+  if [ `echo "$matches" | grep -c .` -gt 1 ]; then
+    echo "Warning: multiple worktrees match '$key', using the first:" >&2
+    echo "$matches" | sed 's/^/  /' >&2
+  fi
+
+  echo "$matches" | head -n 1
+}
+
 function usage() {
   echo "usage dashboard <command> [<args>]"
   echo
@@ -114,10 +139,11 @@ function dashboard() {
 
     return $EXIT_CODE
   elif [ "$COMMAND" = "boot" ]; then
-    $DASHBOARD_DIR/dashboard-ticket-boot.sh ${@:2}
-    if [ $? -eq 0 ]; then
-      # FIXME: Same logic here and in the dashboard-ticket-boot.sh - needs to be unfied
-      cd "$CHECKOUTS_DIR/$2"
+    # The boot dispatcher prints the resolved worktree directory name on STDOUT
+    # (the name depends on the configured boot strategy, e.g. KEY vs KEY-summary).
+    TICKET_DIR_NAME=$($DASHBOARD_DIR/dashboard-ticket-boot.sh ${@:2})
+    if [ $? -eq 0 ] && [ -n "$TICKET_DIR_NAME" ]; then
+      cd "$CHECKOUTS_DIR/$TICKET_DIR_NAME"
     fi
   elif [ "$COMMAND" = "title" ]; then
     $DASHBOARD_DIR/dashboard-terminal-title.sh
@@ -140,7 +166,12 @@ function dashboard() {
         return 1
       fi
     elif [ "$#" -eq 2 ]; then
-      cd "$CHECKOUTS_DIR/$2"
+      TARGET_DIR=`resolve_worktree_dir "$2"`
+      if [ -z "$TARGET_DIR" ]; then
+        echo "Error: No worktree found matching '$2'" >&2
+        return 1
+      fi
+      cd "$CHECKOUTS_DIR/$TARGET_DIR"
     else
       usage
       return 1
