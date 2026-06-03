@@ -4,7 +4,7 @@
 
 import sys
 from simple_term_menu import TerminalMenu
-from jira_dashboard_common import get_ticket_list
+from jira_dashboard_common import get_ticket_list, worktree_names_by_key
 from config import setup_vprint
 
 setup_vprint(False)
@@ -23,9 +23,13 @@ try:
         print("No tickets found")
         sys.exit(1)
 
+    # Map each Jira key back to its worktree directory name, so we open the
+    # directory on disk (e.g. IAT-1234-summary-is-long) rather than the bare key.
+    names_by_key = worktree_names_by_key(tickets_by_comma)
+
     # Prepare menu options
     menu_items = []
-    ticket_keys = []
+    worktree_names = []
 
     for issue in results:
         status = str(issue.fields.status)[:15].ljust(15)
@@ -33,7 +37,7 @@ try:
         summary = issue.fields.summary[:60]
         menu_item = f"{issue.key:<12} {status} {assignee} {summary}"
         menu_items.append(menu_item)
-        ticket_keys.append(issue.key)
+        worktree_names.append(names_by_key.get(issue.key, issue.key))
 
     # Create and show interactive menu
     terminal_menu = TerminalMenu(
@@ -47,8 +51,8 @@ try:
         # User quit the menu
         sys.exit(1)
 
-    # Output the selected ticket key
-    print(ticket_keys[menu_entry_index])
+    # Output the selected worktree directory name
+    print(worktree_names[menu_entry_index])
     sys.exit(0)
 
 except KeyboardInterrupt:
