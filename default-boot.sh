@@ -25,11 +25,12 @@ fi
 BRANCH=$1
 BRANCH_DIR_NAME="$BRANCH"
 
+# Locate the dashboard installation so we can reuse the shared helpers.
+DASHBOARD_DIR="${DASHBOARD_DIR:-$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)}"
+
 echo "Booting branch $BRANCH..." >&2
-git -C "$REPO_CLONE_PATH" worktree add "$CHECKOUTS_DIR/$BRANCH_DIR_NAME" 1>&2
-if [ $? -ne 0 ]; then
-  exit 1
-fi
+source "$DASHBOARD_DIR/boot-common.sh"
+add_worktree "$CHECKOUTS_DIR/$BRANCH_DIR_NAME" "$BRANCH_DIR_NAME" || exit 1
 
 # Only the resolved directory name goes to STDOUT.
 echo "$BRANCH_DIR_NAME"
